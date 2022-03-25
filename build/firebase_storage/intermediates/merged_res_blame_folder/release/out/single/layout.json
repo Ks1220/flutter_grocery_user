@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/firebase_storage/intermediates/res/merged/release/layout/notification_template_part_chronometer.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/875654acb8fd75501dc33efa1bebb479/core-1.6.0/res/layout/notification_template_part_chronometer.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/firebase_storage/intermediates/res/merged/release/layout/notification_action_tombstone.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/875654acb8fd75501dc33efa1bebb479/core-1.6.0/res/layout/notification_action_tombstone.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/firebase_storage/intermediates/res/merged/release/layout/custom_dialog.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/875654acb8fd75501dc33efa1bebb479/core-1.6.0/res/layout/custom_dialog.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/firebase_storage/intermediates/res/merged/release/layout/notification_template_icon_group.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/875654acb8fd75501dc33efa1bebb479/core-1.6.0/res/layout/notification_template_icon_group.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/firebase_storage/intermediates/res/merged/release/layout/notification_action.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/875654acb8fd75501dc33efa1bebb479/core-1.6.0/res/layout/notification_action.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/firebase_storage/intermediates/res/merged/release/layout/notification_template_part_time.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/875654acb8fd75501dc33efa1bebb479/core-1.6.0/res/layout/notification_template_part_time.xml"
+    }
+]

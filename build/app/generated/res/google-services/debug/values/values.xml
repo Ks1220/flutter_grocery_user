@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">936116037068-a60sl5tbfdiho1o2etmff1nhehhm4vhq.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">936116037068</string>
+    <string name="google_api_key" translatable="false">AIzaSyCh9rsnfA-LUkzl3W0LT48b0FjzdlFhXrQ</string>
+    <string name="google_app_id" translatable="false">1:936116037068:android:a35a4db26cc58a196e6969</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCh9rsnfA-LUkzl3W0LT48b0FjzdlFhXrQ</string>
+    <string name="google_storage_bucket" translatable="false">grocerex.appspot.com</string>
+    <string name="project_id" translatable="false">grocerex</string>
+</resources>

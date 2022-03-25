@@ -1,0 +1,62 @@
+[
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/debug/layout/custom_dialog.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/875654acb8fd75501dc33efa1bebb479/core-1.6.0/res/layout/custom_dialog.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/debug/layout/notification_template_big_media_narrow_custom.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/d10be366885a5c747e6d6ca9295b7b6c/media-1.0.0/res/layout/notification_template_big_media_narrow_custom.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/debug/layout/notification_template_icon_group.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/875654acb8fd75501dc33efa1bebb479/core-1.6.0/res/layout/notification_template_icon_group.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/debug/layout/notification_template_big_media.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/d10be366885a5c747e6d6ca9295b7b6c/media-1.0.0/res/layout/notification_template_big_media.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/debug/layout/notification_template_lines_media.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/d10be366885a5c747e6d6ca9295b7b6c/media-1.0.0/res/layout/notification_template_lines_media.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/debug/layout/notification_action.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/875654acb8fd75501dc33efa1bebb479/core-1.6.0/res/layout/notification_action.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/debug/layout/notification_template_part_chronometer.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/875654acb8fd75501dc33efa1bebb479/core-1.6.0/res/layout/notification_template_part_chronometer.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/debug/layout/notification_media_cancel_action.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/d10be366885a5c747e6d6ca9295b7b6c/media-1.0.0/res/layout/notification_media_cancel_action.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/debug/layout/notification_template_part_time.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/875654acb8fd75501dc33efa1bebb479/core-1.6.0/res/layout/notification_template_part_time.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/debug/layout/notification_template_big_media_narrow.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/d10be366885a5c747e6d6ca9295b7b6c/media-1.0.0/res/layout/notification_template_big_media_narrow.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/debug/layout/notification_media_action.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/d10be366885a5c747e6d6ca9295b7b6c/media-1.0.0/res/layout/notification_media_action.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/debug/layout/notification_template_media.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/d10be366885a5c747e6d6ca9295b7b6c/media-1.0.0/res/layout/notification_template_media.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/debug/layout/notification_action_tombstone.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/875654acb8fd75501dc33efa1bebb479/core-1.6.0/res/layout/notification_action_tombstone.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/debug/layout/notification_template_media_custom.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/d10be366885a5c747e6d6ca9295b7b6c/media-1.0.0/res/layout/notification_template_media_custom.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/debug/layout/notification_template_big_media_custom.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/d10be366885a5c747e6d6ca9295b7b6c/media-1.0.0/res/layout/notification_template_big_media_custom.xml"
+    }
+]

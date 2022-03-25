@@ -1,0 +1,74 @@
+[
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/release/drawable/notification_bg.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/875654acb8fd75501dc33efa1bebb479/core-1.6.0/res/drawable/notification_bg.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/release/drawable/notification_tile_bg.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/875654acb8fd75501dc33efa1bebb479/core-1.6.0/res/drawable/notification_tile_bg.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/release/drawable/common_google_signin_btn_icon_light_normal.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/24d7e86f0f313f8218448259dc56b31d/jetified-play-services-base-16.0.1/res/drawable/common_google_signin_btn_icon_light_normal.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/release/drawable/common_google_signin_btn_icon_light_focused.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/24d7e86f0f313f8218448259dc56b31d/jetified-play-services-base-16.0.1/res/drawable/common_google_signin_btn_icon_light_focused.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/release/drawable/notification_bg_low.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/875654acb8fd75501dc33efa1bebb479/core-1.6.0/res/drawable/notification_bg_low.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/release/drawable/common_google_signin_btn_text_light_normal.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/24d7e86f0f313f8218448259dc56b31d/jetified-play-services-base-16.0.1/res/drawable/common_google_signin_btn_text_light_normal.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/release/drawable/common_google_signin_btn_text_dark_focused.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/24d7e86f0f313f8218448259dc56b31d/jetified-play-services-base-16.0.1/res/drawable/common_google_signin_btn_text_dark_focused.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/release/drawable/common_google_signin_btn_text_disabled.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/24d7e86f0f313f8218448259dc56b31d/jetified-play-services-base-16.0.1/res/drawable/common_google_signin_btn_text_disabled.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/release/drawable/common_google_signin_btn_icon_light.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/24d7e86f0f313f8218448259dc56b31d/jetified-play-services-base-16.0.1/res/drawable/common_google_signin_btn_icon_light.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/release/drawable/common_google_signin_btn_text_light.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/24d7e86f0f313f8218448259dc56b31d/jetified-play-services-base-16.0.1/res/drawable/common_google_signin_btn_text_light.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/release/drawable/common_google_signin_btn_icon_dark_normal.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/24d7e86f0f313f8218448259dc56b31d/jetified-play-services-base-16.0.1/res/drawable/common_google_signin_btn_icon_dark_normal.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/release/drawable/common_google_signin_btn_text_light_focused.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/24d7e86f0f313f8218448259dc56b31d/jetified-play-services-base-16.0.1/res/drawable/common_google_signin_btn_text_light_focused.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/release/drawable/common_google_signin_btn_icon_dark_focused.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/24d7e86f0f313f8218448259dc56b31d/jetified-play-services-base-16.0.1/res/drawable/common_google_signin_btn_icon_dark_focused.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/release/drawable/common_google_signin_btn_icon_disabled.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/24d7e86f0f313f8218448259dc56b31d/jetified-play-services-base-16.0.1/res/drawable/common_google_signin_btn_icon_disabled.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/release/drawable/notification_icon_background.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/875654acb8fd75501dc33efa1bebb479/core-1.6.0/res/drawable/notification_icon_background.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/release/drawable/common_google_signin_btn_text_dark.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/24d7e86f0f313f8218448259dc56b31d/jetified-play-services-base-16.0.1/res/drawable/common_google_signin_btn_text_dark.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/release/drawable/common_google_signin_btn_text_dark_normal.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/24d7e86f0f313f8218448259dc56b31d/jetified-play-services-base-16.0.1/res/drawable/common_google_signin_btn_text_dark_normal.xml"
+    },
+    {
+        "merged": "/Users/lavax/Desktop/flutter_grocery/build/google_sign_in/intermediates/res/merged/release/drawable/common_google_signin_btn_icon_dark.xml",
+        "source": "/Users/lavax/.gradle/caches/transforms-2/files-2.1/24d7e86f0f313f8218448259dc56b31d/jetified-play-services-base-16.0.1/res/drawable/common_google_signin_btn_icon_dark.xml"
+    }
+]
