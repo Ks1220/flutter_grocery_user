@@ -1,6 +1,6 @@
 {
-    "name": "flutter_grocery",
-    "short_name": "flutter_grocery",
+    "name": "flutter_grocery_user",
+    "short_name": "flutter_grocery_user",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

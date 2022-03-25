@@ -5,9 +5,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_grocery/AuthService.dart';
+import 'package:flutter_grocery_user/AuthService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_grocery/HomePage.dart';
+import 'package:flutter_grocery_user/HomePage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as Path;
 

@@ -1,8 +1,8 @@
 import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_grocery/AuthService.dart';
+import 'package:flutter_grocery_user/AuthService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_grocery/StoreDetails.dart';
+import 'package:flutter_grocery_user/StoreDetails.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);

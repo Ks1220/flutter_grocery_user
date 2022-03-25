@@ -2,7 +2,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_grocery/HomePage.dart';
+import 'package:flutter_grocery_user/HomePage.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'Start.dart';
 

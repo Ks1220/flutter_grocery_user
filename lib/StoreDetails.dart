@@ -1,11 +1,11 @@
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_grocery/AuthService.dart';
+import 'package:flutter_grocery_user/AuthService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_grocery/Verify.dart';
-// import 'package:flutter_grocery/provider/GoogleSignInProvider.dart';
+import 'package:flutter_grocery_user/Verify.dart';
+// import 'package:flutter_grocery_user/provider/GoogleSignInProvider.dart';
 // import 'package:flutter_signin_button/flutter_signin_button.dart';
 // import 'package:provider/provider.dart';
 import 'dart:io';
@@ -504,7 +504,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                     }
                   }
                   FirebaseFirestore.instance
-                      .collection('MerchantData')
+                      .collection('UserData')
                       .doc(user.user!.uid)
                       .set({
                     "uid": _firebaseAuth.currentUser!.uid.toString(),
@@ -523,7 +523,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                         _storeStateController.text +
                         "," +
                         _storeCountryController.text,
-                    "isMerchant": true
+                    "isMerchant": false
                   });
                   Navigator.push(
                       context,
