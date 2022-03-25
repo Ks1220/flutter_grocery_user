@@ -51,4 +51,4 @@ Run the command
 flutter build apk --build-name=(your version number) --build-number=(number sequence)
 ```
 
-Once the application has been built, direct to ```flutter_grocery\build\app\outputs\flutter-apk``` and find for ```app-release.apk```
+Once the application has been built, direct to ```flutter_grocery_user\build\app\outputs\flutter-apk``` and find for ```app-release.apk```
