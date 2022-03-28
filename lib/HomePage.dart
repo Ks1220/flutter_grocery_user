@@ -5,6 +5,10 @@ import 'package:alphabet_scroll_view/alphabet_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery_user/ProfilePage.dart';
 import 'package:flutter_grocery_user/databaseManager/DatabaseManager.dart';
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'AddItem.dart';
 
@@ -32,6 +36,19 @@ class _HomePageState extends State<HomePage> {
   late List groceries;
 
   int _selectedIndex = 0;
+
+  Completer<GoogleMapController> _controller = Completer();
+
+  static final CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(37.42796133580664, -122.085749655962),
+    zoom: 14.4746,
+  );
+
+  static final CameraPosition _kLake = CameraPosition(
+      bearing: 192.8334901395799,
+      target: LatLng(37.43296265331129, -122.08832357078792),
+      tilt: 59.440717697143555,
+      zoom: 19.151926040649414);
 
   @override
   void initState() {
@@ -122,15 +139,18 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 65.0,
-        backgroundColor: Color(0xff2C6846),
+        title: Image.asset('images/logo-name.png'),
+        backgroundColor: new Color(0xffff),
+        shadowColor: Colors.transparent,
         automaticallyImplyLeading: false,
-        title: const Text('Home'),
+        elevation: 0,
+        toolbarHeight: 90.0,
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.account_circle_rounded),
+            color: Colors.black,
+            icon: const Icon(Icons.account_circle_sharp),
             tooltip: 'Open User Profile',
-            iconSize: 40,
+            iconSize: 50,
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => ProfilePage(currentUser)));
@@ -141,7 +161,7 @@ class _HomePageState extends State<HomePage> {
       body: Column(children: [
         Container(
           width: 350.0,
-          margin: EdgeInsets.fromLTRB(10, 20, 10, 10),
+          margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
           child: TextField(
             onChanged: (value) {
               filterSearchResults(value);
@@ -155,172 +175,41 @@ class _HomePageState extends State<HomePage> {
                 )),
           ),
         ),
-        items.length == 0 && searchController.text.isEmpty
-            ? Container(
-                height: MediaQuery.of(context).size.width,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image(
-                          width: 100,
-                          height: 100,
-                          image: AssetImage("images/empty-guide.png"),
-                          fit: BoxFit.contain),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                          width: 170,
-                          child: Text(
-                            "Add Item by Pressing '+' Button",
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w600),
-                            textAlign: TextAlign.center,
-                          ))
-                    ],
-                  ),
-                ),
-              )
-            : Expanded(
-                child: searchController.text.length > 0
-                    ? ListView.builder(
-                        itemCount: items.length,
-                        itemBuilder: (ctx, index) {
-                          return GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        AddItem(!_isEdit, itemsIdList[index])));
-                              },
-                              child: Container(
-                                  padding: const EdgeInsets.fromLTRB(
-                                      0.0, 10.0, 30, 0.0),
-                                  height: 90,
-                                  child: ListTile(
-                                    shape: Border(
-                                        bottom: BorderSide(
-                                            color: Color.fromARGB(
-                                                255, 199, 199, 199),
-                                            width: 1)),
-                                    title: Text(items.length > 0
-                                        ? "${items[index]["itemName"]}"
-                                        : ""),
-                                    subtitle: Text(items.length > 0
-                                        ? "${items[index]["price"]}/${items[index]["measurementMatrix"]}"
-                                        : ""),
-                                    leading: (Image(
-                                        width: 65,
-                                        height: 65,
-                                        fit: BoxFit.fill,
-                                        image: NetworkImage(
-                                            items[index]["itemImage"]))),
-                                    trailing: Text(items.length > 0
-                                        ? "Stock: ${items[index]["stockAmount"]}"
-                                        : ""),
-                                  )));
-                        },
-                      )
-                    : AlphabetScrollView(
-                        list: nameList.map((e) => AlphaModel(e)).toList(),
-                        alignment: LetterAlignment.right,
-                        itemExtent: 150,
-                        unselectedTextStyle: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.normal,
-                            color: Colors.black),
-                        selectedTextStyle: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xff2C6846)),
-                        overlayWidget: (value) => Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Icon(
-                              Icons.star,
-                              size: 50,
-                              color: Colors.red,
-                            ),
-                            Container(
-                              height: 50,
-                              width: 50,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                '$value'.toUpperCase(),
-                                style: TextStyle(
-                                    fontSize: 18, color: Colors.white),
-                              ),
-                            ),
-                          ],
-                        ),
-                        itemBuilder: (_, index, buildContext) {
-                          return (GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        AddItem(!_isEdit, itemsIdList[index])));
-                              },
-                              child: Container(
-                                  padding: const EdgeInsets.fromLTRB(
-                                      0.0, 10.0, 30, 0.0),
-                                  height: 90,
-                                  child: ListTile(
-                                    shape: Border(
-                                        bottom: BorderSide(
-                                            color: Color.fromARGB(
-                                                255, 199, 199, 199),
-                                            width: 1)),
-                                    title: Text(items[index] != null
-                                        ? "${items[index]["itemName"]}"
-                                        : ""),
-                                    subtitle: Text(items[index] != null
-                                        ? "${items[index]["price"]}/${items[index]["measurementMatrix"]}"
-                                        : ""),
-                                    leading: (Image(
-                                        width: 65,
-                                        height: 65,
-                                        fit: BoxFit.fill,
-                                        image: NetworkImage(
-                                            items[index]["itemImage"]))),
-                                    trailing: Text(items[index] != null
-                                        ? "Stock: ${items[index]["stockAmount"]}"
-                                        : ""),
-                                  ))));
-                        },
-                      )),
+        SingleChildScrollView(
+          child: GoogleMap(
+            mapType: MapType.hybrid,
+            initialCameraPosition: _kGooglePlex,
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+            },
+          ),
+        )
       ]),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => AddItem(_isEdit, "testing")));
-        },
-        tooltip: 'Add Grocery Item',
-        backgroundColor: Color(0xff2C6846),
-        child: Icon(Icons.add),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedIconTheme: IconThemeData(color: Color(0xff2C6846)),
-        selectedItemColor: Color(0xff2C6846),
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.swap_horiz),
-            label: 'Orders',
-          ),
-        ],
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.of(context).push(MaterialPageRoute(
+      //         builder: (context) => AddItem(_isEdit, "testing")));
+      //   },
+      //   tooltip: 'Add Grocery Item',
+      //   backgroundColor: Color(0xff2C6846),
+      //   child: Icon(Icons.add),
+      // ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   currentIndex: _selectedIndex,
+      //   onTap: _onItemTapped,
+      //   selectedIconTheme: IconThemeData(color: Color(0xff2C6846)),
+      //   selectedItemColor: Color(0xff2C6846),
+      //   items: const <BottomNavigationBarItem>[
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.home),
+      //       label: 'Home',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.swap_horiz),
+      //       label: 'Orders',
+      //     ),
+      //   ],
+      // ),
     );
   }
 }

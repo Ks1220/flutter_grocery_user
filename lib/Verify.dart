@@ -99,7 +99,7 @@ class _VerifyState extends State<Verify> {
                       children: [
                         TextSpan(
                             text:
-                                "Once verified, you will be able to enjoy all the most exciting feature such as uploading your grocery product into our application!"),
+                                "Once verified, you will be able to enjoy all the most exciting feature such as purchasing groceries through our application!"),
                       ])),
               width: mediaQueryData.size.width * 0.85,
             ),

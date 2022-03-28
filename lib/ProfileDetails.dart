@@ -10,9 +10,6 @@ import 'package:flutter_grocery_user/Verify.dart';
 // import 'package:provider/provider.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as Path;
 
 class StoreDetails extends StatefulWidget {
   final TextEditingController _nameController,
@@ -30,13 +27,12 @@ class _StoreDetailsState extends State<StoreDetails> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
 
-  TextEditingController _storeNameController = TextEditingController();
-  TextEditingController _storeAddressOneController = TextEditingController();
-  TextEditingController _storeAddressTwoController = TextEditingController();
-  TextEditingController _storePostalCodeController = TextEditingController();
-  TextEditingController _storeCityController = TextEditingController();
-  TextEditingController _storeStateController = TextEditingController();
-  TextEditingController _storeCountryController = TextEditingController();
+  TextEditingController _addressOneController = TextEditingController();
+  TextEditingController _addressTwoController = TextEditingController();
+  TextEditingController _postalCodeController = TextEditingController();
+  TextEditingController _cityController = TextEditingController();
+  TextEditingController _stateController = TextEditingController();
+  TextEditingController _countryController = TextEditingController();
 
   late String _email, _password, _name, _confirmpass;
 
@@ -78,121 +74,6 @@ class _StoreDetailsState extends State<StoreDetails> {
     );
   }
 
-  showMyDialog() async {
-    return showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return Align(
-          alignment: FractionalOffset.bottomCenter,
-          child: SimpleDialog(
-            children: <Widget>[
-              SimpleDialogOption(
-                onPressed: () {
-                  pickImage(ImageSource.gallery);
-                  Navigator.pop(context, _imageFile != null);
-                },
-                child: Row(children: [
-                  Icon(
-                    Icons.image,
-                    size: 20,
-                    color: Colors.black,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    'Select from Gallery',
-                    style: TextStyle(fontSize: 15),
-                  )
-                ]),
-              ),
-              SimpleDialogOption(
-                onPressed: () {
-                  pickImage(ImageSource.camera);
-                  Navigator.pop(context, _imageFile != null);
-                },
-                child: Row(children: [
-                  Icon(
-                    Icons.camera_alt,
-                    size: 20,
-                    color: Colors.black,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    'Take Image',
-                    style: TextStyle(fontSize: 15),
-                  )
-                ]),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  showDeleteDialog() async {
-    return showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Remove Image'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: const <Widget>[
-                Text(
-                    'Are you sure to delete this image? Once delete, you will required to insert another image.'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text(
-                'Cancel',
-                style: TextStyle(color: Colors.black),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text(
-                'Ok',
-                style: TextStyle(color: Color(0xff2C6846)),
-              ),
-              onPressed: () {
-                setState(() => _imageFile = null);
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future pickImage(ImageSource source) async {
-    try {
-      final image = await ImagePicker().pickImage(source: source);
-      if (image == null) return;
-      setState(() => _imageFile = File(image.path));
-      String fileName = Path.basename(_imageFile!.path);
-
-      Reference firebaseStorageRef =
-          FirebaseStorage.instance.ref().child('$fileName');
-      await firebaseStorageRef.putFile(File(image.path));
-      setState(() async {
-        imageUrl = await firebaseStorageRef.getDownloadURL();
-      });
-    } on PlatformException catch (e) {
-      print("Failed to pick image: $e");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
@@ -227,7 +108,7 @@ class _StoreDetailsState extends State<StoreDetails> {
             child: RichText(
               textAlign: TextAlign.left,
               text: TextSpan(
-                  text: "Shop Details",
+                  text: "Shipping Details",
                   style: TextStyle(
                       fontSize: 26,
                       fontFamily: 'Inter',
@@ -242,7 +123,7 @@ class _StoreDetailsState extends State<StoreDetails> {
               textAlign: TextAlign.left,
               text: TextSpan(
                   text:
-                      "Please enter your shop details before proceed on adding your grocery items ",
+                      "Please enter your profile details for shipping purposes ",
                   style: TextStyle(
                       fontSize: 12,
                       fontFamily: 'Inter',
@@ -256,85 +137,9 @@ class _StoreDetailsState extends State<StoreDetails> {
             child: Form(
                 key: _formKey,
                 child: Column(children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: 170,
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                            flex: 1,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                _imageFile != null
-                                    ? GestureDetector(
-                                        onTap: () {
-                                          showMyDialog();
-                                        },
-                                        child: CircleAvatar(
-                                          radius: 50.0,
-                                          child: ClipRRect(
-                                            child: Image.file(_imageFile!,
-                                                width: 100,
-                                                height: 100,
-                                                fit: BoxFit.cover),
-                                            borderRadius:
-                                                BorderRadius.circular(50.0),
-                                          ),
-                                        ),
-                                      )
-                                    : RawMaterialButton(
-                                        onPressed: () => {showMyDialog()},
-                                        elevation: 2.0,
-                                        fillColor: Colors.grey,
-                                        child: Icon(
-                                          Icons.add_circle,
-                                          size: 25.0,
-                                          color:
-                                              Color.fromRGBO(28, 125, 232, 1),
-                                        ),
-                                        padding: EdgeInsets.all(35.0),
-                                        shape: CircleBorder(),
-                                      ),
-                                SizedBox(height: 10.0),
-                                Text("Shop Logo",
-                                    style: TextStyle(color: Color(0xff2C6846)))
-                              ],
-                            )),
-                      ],
-                    ),
-                  ),
-                  TextFormField(
-                    controller: _storeNameController,
-                    validator: (input) {
-                      if (input!.isEmpty) return 'Please enter a Shop Name';
-                    },
-                    decoration: InputDecoration(
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.red),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.red),
-                        ),
-                        errorStyle: TextStyle(height: 0.4),
-                        contentPadding:
-                            const EdgeInsets.symmetric(vertical: 20.0),
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xff2C6846))),
-                        focusColor: Color(0xff2C6846),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                          color: Color(0xff2C6846),
-                        )),
-                        labelStyle: TextStyle(color: Color(0xff2C6846)),
-                        labelText: "Shop Name",
-                        prefixIcon:
-                            Icon(Icons.store, color: Color(0xff2C6846))),
-                  ),
                   SizedBox(height: 15),
                   TextFormField(
-                    controller: _storeAddressOneController,
+                    controller: _addressOneController,
                     validator: (input) {
                       if (input!.isEmpty) return 'Pleas enter an address';
                     },
@@ -362,7 +167,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                   ),
                   SizedBox(height: 15),
                   TextFormField(
-                    controller: _storeAddressTwoController,
+                    controller: _addressTwoController,
                     validator: (input) {
                       if (input!.length < 5)
                         return 'Please enter an appropriate address';
@@ -393,7 +198,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                       Expanded(
                         flex: 1,
                         child: TextFormField(
-                          controller: _storePostalCodeController,
+                          controller: _postalCodeController,
                           validator: (input) {
                             if (input!.length < 5)
                               return 'Incorrect postal code';
@@ -422,7 +227,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                       SizedBox(width: 10.0),
                       Expanded(
                         child: TextFormField(
-                          controller: _storeStateController,
+                          controller: _stateController,
                           validator: (input) {
                             if (input!.length < 2) return 'No such state';
                           },
@@ -450,30 +255,68 @@ class _StoreDetailsState extends State<StoreDetails> {
                     ],
                   ),
                   SizedBox(height: 15),
-                  TextFormField(
-                    controller: _storeCountryController,
-                    validator: (input) {
-                      if (input!.length < 2)
-                        return 'Please enter a correct country';
-                    },
-                    decoration: InputDecoration(
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Expanded(
+                        flex: 1,
+                        child: TextFormField(
+                          controller: _cityController,
+                          validator: (input) {
+                            if (input!.length < 2)
+                              return 'Please enter a correct city';
+                          },
+                          decoration: InputDecoration(
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.red),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.red),
+                            ),
+                            errorStyle: TextStyle(height: 0.4),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Color(0xff2C6846))),
+                            focusColor: Color(0xff2C6846),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                              color: Color(0xff2C6846),
+                            )),
+                            labelStyle: TextStyle(color: Color(0xff2C6846)),
+                            labelText: "City",
+                          ),
+                        ),
                       ),
-                      errorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),
+                      SizedBox(width: 10.0),
+                      Expanded(
+                        child: TextFormField(
+                          controller: _countryController,
+                          validator: (input) {
+                            if (input!.length < 2)
+                              return 'Please enter a correct country';
+                          },
+                          decoration: InputDecoration(
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.red),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.red),
+                            ),
+                            errorStyle: TextStyle(height: 0.4),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Color(0xff2C6846))),
+                            focusColor: Color(0xff2C6846),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                              color: Color(0xff2C6846),
+                            )),
+                            labelStyle: TextStyle(color: Color(0xff2C6846)),
+                            labelText: "Country",
+                          ),
+                        ),
                       ),
-                      errorStyle: TextStyle(height: 0.4),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xff2C6846))),
-                      focusColor: Color(0xff2C6846),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                        color: Color(0xff2C6846),
-                      )),
-                      labelStyle: TextStyle(color: Color(0xff2C6846)),
-                      labelText: "Country",
-                    ),
+                    ],
                   ),
                 ])),
           ),
@@ -510,19 +353,17 @@ class _StoreDetailsState extends State<StoreDetails> {
                     "uid": _firebaseAuth.currentUser!.uid.toString(),
                     "email": user.user!.email,
                     "name": widget._nameController.text,
-                    "shopLogo": imageUrl,
-                    "storeName": _storeNameController.text,
-                    "storeAddress": _storeAddressOneController.text +
+                    "shippingAddress": _addressOneController.text +
                         "," +
-                        _storeAddressTwoController.text +
+                        _addressTwoController.text +
                         "," +
-                        _storePostalCodeController.text +
+                        _postalCodeController.text +
                         "," +
-                        _storeCityController.text +
+                        _cityController.text +
                         "," +
-                        _storeStateController.text +
+                        _stateController.text +
                         "," +
-                        _storeCountryController.text,
+                        _countryController.text,
                     "isMerchant": false
                   });
                   Navigator.push(

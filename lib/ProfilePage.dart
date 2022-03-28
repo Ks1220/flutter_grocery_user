@@ -45,7 +45,7 @@ class _ProfilePageState extends State<ProfilePage> {
   getData() async {
     var firestore = FirebaseFirestore.instance;
     DocumentSnapshot qn = await firestore
-        .collection('MerchantData')
+        .collection('UserData')
         .doc(widget.currentUser?.uid)
         .get();
     return qn.data();
@@ -201,7 +201,7 @@ class _ProfilePageState extends State<ProfilePage> {
         imageUrl = await firebaseStorageRef.getDownloadURL();
 
         await FirebaseFirestore.instance
-            .collection('MerchantData')
+            .collection('UserData')
             .doc(widget.currentUser?.uid)
             .update({"shopLogo": imageUrl}).then((value) => {
                   showFlash(
@@ -411,7 +411,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             if (_formKey.currentState!
                                                 .validate()) {
                                               await FirebaseFirestore.instance
-                                                  .collection('MerchantData')
+                                                  .collection('UserData')
                                                   .doc(widget.currentUser?.uid)
                                                   .update({
                                                 "name": _nameController.text,
@@ -608,7 +608,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             if (_formKey.currentState!
                                                 .validate()) {
                                               await FirebaseFirestore.instance
-                                                  .collection('MerchantData')
+                                                  .collection('UserData')
                                                   .doc(widget.currentUser?.uid)
                                                   .update({
                                                 "storeName":
@@ -840,7 +840,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             if (_formKey.currentState!
                                                 .validate()) {
                                               await FirebaseFirestore.instance
-                                                  .collection('MerchantData')
+                                                  .collection('UserData')
                                                   .doc(widget.currentUser?.uid)
                                                   .update({
                                                 "storeAddress":

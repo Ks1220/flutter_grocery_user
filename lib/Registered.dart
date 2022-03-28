@@ -43,7 +43,7 @@ class _RegisteredState extends State<Registered> {
               child: RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
-                    text: "Register ",
+                    text: "Registered ",
                     style: TextStyle(
                         fontSize: mediaQueryData.textScaleFactor /
                             mediaQueryData.textScaleFactor *
