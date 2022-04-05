@@ -156,7 +156,7 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             FutureBuilder(
               future: getData(),
-              builder: (BuildContext context, snapshot) {
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
                 _nameController.text =
                     (snapshot.data as Map<String, dynamic>)['name'];
 

@@ -9,6 +9,8 @@ import 'package:custom_info_window/custom_info_window.dart';
 import 'package:clippy_flutter/triangle.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import 'StoreItem.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -89,9 +91,6 @@ class _HomePageState extends State<HomePage> {
     // ignore: unnecessary_statements
 
     setState(() {
-      // mapData.forEach((items) {
-      //   print("THIS IS MAPDATA 123456: $items");
-      // });
       _customInfoWindowController.googleMapController = controller;
       mapData.forEach((items) {
         _markers.add(Marker(
@@ -100,94 +99,109 @@ class _HomePageState extends State<HomePage> {
           icon: mapMarker,
           onTap: () {
             _customInfoWindowController.addInfoWindow!(
-              Container(
-                width: MediaQuery.of(context).size.width * 0.85,
-                height: MediaQuery.of(context).size.height * 0.24,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Row(
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.all(10),
-                                    child: Image(
-                                      height: 90,
-                                      width: 90,
-                                      image: NetworkImage(items["shopLogo"]),
-                                      fit: BoxFit.fill,
-                                    ),
-                                  )
-                                ],
-                              ),
-                              VerticalDivider(
-                                color: Colors.grey,
-                                thickness: 2,
-                              ),
-                              Column(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(
-                                        left: 15, bottom: 15, top: 15),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        text: items["storeName"],
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                    ),
-                                    width: MediaQuery.of(context).size.width *
-                                        0.45,
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 15),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: items["storeAddress"],
-                                            style: TextStyle(
-                                              color: Colors.black87,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    width: MediaQuery.of(context).size.width *
-                                        0.45,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        width: double.infinity,
-                        height: double.infinity,
-                      ),
-                    ),
-                    Triangle.isosceles(
-                      edge: Edge.BOTTOM,
-                      child: Container(
+              Column(
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
                         color: Colors.white,
-                        width: 20.0,
-                        height: 10.0,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Row(
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.all(7),
+                                  child: Image(
+                                    height: 80,
+                                    width: 80,
+                                    image: NetworkImage(items["shopLogo"]),
+                                    fit: BoxFit.fill,
+                                  ),
+                                )
+                              ],
+                            ),
+                            VerticalDivider(
+                              color: Colors.grey,
+                              thickness: 2,
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(
+                                      left: 5, bottom: 15, top: 15),
+                                  child: RichText(
+                                    text: TextSpan(
+                                      text: items["storeName"],
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.45,
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(left: 5, right: 5),
+                                  child: RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: items["storeAddress"],
+                                          style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.45,
+                                ),
+                              ],
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        StoreItem(items["uid"])));
+                              },
+                              child: AbsorbPointer(
+                                  child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                    padding: EdgeInsets.zero,
+                                    constraints: BoxConstraints(),
+                                    icon: Icon(Icons.chevron_right_outlined),
+                                    color: Colors.black87,
+                                    iconSize: 45.0,
+                                    onPressed: () => {},
+                                  ),
+                                ],
+                              )),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  Triangle.isosceles(
+                    edge: Edge.BOTTOM,
+                    child: Container(
+                      color: Colors.white,
+                      width: 20.0,
+                      height: 10.0,
+                    ),
+                  ),
+                ],
               ),
               LatLng(items['latitude'], items['longitude']),
             );
@@ -338,74 +352,11 @@ class _HomePageState extends State<HomePage> {
             ),
             CustomInfoWindow(
               controller: _customInfoWindowController,
-              width: MediaQuery.of(context).size.width * 0.85,
+              width: MediaQuery.of(context).size.width * 0.9,
               height: MediaQuery.of(context).size.height * 0.2,
             ),
           ]),
         ),
-
-        // FutureBuilder(
-        //   future: DatabaseManager().getGroceryStore(),
-        //   builder: (BuildContext context, AsyncSnapshot snapshot) {
-        //     // name = (snapshot.data as Map<String, dynamic>)['shopLogo'];
-
-        //     if (snapshot.hasData) {
-        //       if (snapshot.connectionState == ConnectionState.waiting) {
-        //         return Container();
-        //       } else if (snapshot.connectionState == ConnectionState.done) {
-        //         mapData = snapshot.data;
-
-        //         // return Column(children: [
-        //         // Container(
-        //         //   height: MediaQuery.of(context).size.width,
-        //         //   child: Align(
-        //         //     alignment: Alignment.center,
-        //         //     child: Column(
-        //         //       crossAxisAlignment: CrossAxisAlignment.center,
-        //         //       mainAxisAlignment: MainAxisAlignment.center,
-        //         //       children: [],
-        //         //     ),
-        //         //   ),
-        //         // )
-        //         // This is how you get data
-        //         // (snapshot.data as Map<String, dynamic>)['name'],
-        //         // ListTile(
-        //         //   shape: Border(
-        //         //       bottom: BorderSide(
-        //         //           color: Color.fromARGB(255, 199, 199, 199),
-        //         //           width: 1)),
-        //         //   leading: (Column(
-        //         //     mainAxisAlignment: MainAxisAlignment.center,
-        //         //     crossAxisAlignment: CrossAxisAlignment.center,
-        //         //     children: [
-        //         //       Text(
-        //         //         "Email",
-        //         //         style: const TextStyle(
-        //         //             fontSize: 15, fontWeight: FontWeight.w700),
-        //         //       ),
-        //         //     ],
-        //         //   )),
-        //         //   trailing: Wrap(
-        //         //     crossAxisAlignment: WrapCrossAlignment.center,
-        //         //     children: <Widget>[
-        //         //       Text(
-        //         //         (snapshot.data as Map<String, dynamic>)['name'],
-        //         //         style: const TextStyle(
-        //         //             fontSize: 15,
-        //         //             fontWeight: FontWeight.w600,
-        //         //             color: Colors.grey),
-        //         //       ),
-        //         //     ],
-        //         //   ),
-        //         // ),
-        //         // ]);
-        //       }
-        //     } else if (snapshot.hasError) {
-        //       return Text('no data');
-        //     }
-        //     return Container();
-        //   },
-        // ),
       ]),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: () {
