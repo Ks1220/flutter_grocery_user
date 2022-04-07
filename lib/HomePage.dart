@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:clippy_flutter/triangle.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'StoreItem.dart';
@@ -111,21 +112,29 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.all(5.0),
                         child: Row(
                           children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(7),
-                                  child: Image(
-                                    height: 80,
-                                    width: 80,
-                                    image: NetworkImage(items["shopLogo"]),
-                                    fit: BoxFit.fill,
+                            Center(
+                                child: Padding(
+                              padding: EdgeInsets.all(7),
+                              child: CachedNetworkImage(
+                                width: 80,
+                                height: 80,
+                                imageUrl: items["shopLogo"],
+                                progressIndicatorBuilder:
+                                    (context, url, downloadProgress) =>
+                                        SizedBox(
+                                  width: 80,
+                                  height: 80,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.black26,
+                                    ),
                                   ),
-                                )
-                              ],
-                            ),
+                                ),
+                                fit: BoxFit.fill,
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
+                              ),
+                            )),
                             VerticalDivider(
                               color: Colors.grey,
                               thickness: 2,
@@ -174,18 +183,15 @@ class _HomePageState extends State<HomePage> {
                                         StoreItem(items["uid"])));
                               },
                               child: AbsorbPointer(
-                                  child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  IconButton(
-                                    padding: EdgeInsets.zero,
-                                    constraints: BoxConstraints(),
-                                    icon: Icon(Icons.chevron_right_outlined),
-                                    color: Colors.black87,
-                                    iconSize: 45.0,
-                                    onPressed: () => {},
-                                  ),
-                                ],
+                                  child: Center(
+                                child: IconButton(
+                                  padding: EdgeInsets.zero,
+                                  constraints: BoxConstraints(),
+                                  icon: Icon(Icons.chevron_right_outlined),
+                                  color: Colors.black87,
+                                  iconSize: 45.0,
+                                  onPressed: () => {},
+                                ),
                               )),
                             ),
                           ],

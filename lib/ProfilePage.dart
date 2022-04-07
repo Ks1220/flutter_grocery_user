@@ -94,19 +94,14 @@ class _ProfilePageState extends State<ProfilePage> {
                               child: Container(
                                   width: MediaQuery.of(context).size.width,
                                   height: 70,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "Log Out Successfully",
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
+                                  child: Center(
+                                    child: Text(
+                                      "Log Out Successfully",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
                                       ),
-                                    ],
+                                    ),
                                   )),
                             );
                           },
@@ -166,13 +161,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                 if (snapshot.hasData) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircularProgressIndicator(),
-                      ],
-                    );
+                    return Center(child: CircularProgressIndicator());
                   } else if (snapshot.connectionState == ConnectionState.done) {
                     return Column(children: [
                       ListTile(

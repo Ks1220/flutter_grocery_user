@@ -37,19 +37,14 @@ class _SignUpState extends State<SignUp> {
           position: FlashPosition.top,
           child: Container(
               width: MediaQuery.of(context).size.width,
+              alignment: Alignment.center,
               height: 70,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    errormessage.toString(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
-                  ),
-                ],
+              child: Text(
+                errormessage.toString(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                ),
               )),
         );
       },
