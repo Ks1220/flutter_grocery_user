@@ -32,13 +32,14 @@ class _StoreItemState extends State<StoreItem> {
 
   late List groceries;
 
-  int _selectedIndex = 0;
+  String storeName = "", storeAddress = "", shopLogo = "";
 
   @override
   void initState() {
     super.initState();
     fetchGroceryItemList();
     fetchItemId();
+    fetchShopDetails();
     searchController = TextEditingController();
   }
 
@@ -46,12 +47,6 @@ class _StoreItemState extends State<StoreItem> {
   void dispose() {
     super.dispose();
     searchController.dispose();
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
   }
 
   fetchGroceryItemList() async {
@@ -70,7 +65,7 @@ class _StoreItemState extends State<StoreItem> {
   fetchItemId() async {
     Query itemId = FirebaseFirestore.instance
         .collection('Items')
-        .doc(currentUser!.uid)
+        .doc(widget._storeId)
         .collection('Item')
         .orderBy("itemName");
 
@@ -81,17 +76,19 @@ class _StoreItemState extends State<StoreItem> {
     });
   }
 
-  getUser() async {
-    User? firebaseUser = _auth.currentUser;
-    await firebaseUser!.reload();
-    firebaseUser = _auth.currentUser!;
+  fetchShopDetails() async {
+    DocumentReference shopDetails = FirebaseFirestore.instance
+        .collection('MerchantData')
+        .doc(widget._storeId);
 
-    if (firebaseUser != null) {
+    await shopDetails.get().then((docs) {
       setState(() {
-        this.user = firebaseUser!;
-        this.isLoggedin = true;
+        print("THIS IS DOCS: ${docs["storeName"]}");
+        storeName = docs["storeName"];
+        storeAddress = docs["storeAddress"];
+        shopLogo = docs["shopLogo"];
       });
-    }
+    });
   }
 
   void filterSearchResults(String query) {
@@ -133,8 +130,92 @@ class _StoreItemState extends State<StoreItem> {
       ),
       body: Column(children: [
         Container(
-          width: 350.0,
-          margin: EdgeInsets.fromLTRB(10, 20, 10, 10),
+          width: 380,
+          margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Colors.black38),
+            borderRadius: BorderRadius.circular(5),
+            // boxShadow: [
+            //   BoxShadow(
+            //       color: Colors.black54,
+            //       spreadRadius: 2,
+            //       blurRadius: 15.0,
+            //       offset: Offset(0.0, 0.75)),
+            // ],
+            boxShadow: kElevationToShadow[4],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 15.0),
+            child: Row(
+              children: [
+                Center(
+                    child: Padding(
+                  padding: EdgeInsets.all(0),
+                  child: CachedNetworkImage(
+                    width: 60,
+                    height: 60,
+                    imageUrl: shopLogo,
+                    progressIndicatorBuilder:
+                        (context, url, downloadProgress) => SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black26,
+                        ),
+                      ),
+                    ),
+                    fit: BoxFit.fill,
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
+                )),
+                VerticalDivider(
+                  color: Colors.grey,
+                  thickness: 2,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: RichText(
+                          text: TextSpan(
+                            text: storeName,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                        width: MediaQuery.of(context).size.width * 0.6,
+                      ),
+                      Container(
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: storeAddress,
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+        Container(
+          width: 383.0,
+          margin: EdgeInsets.fromLTRB(10, 20, 10, 0),
           child: TextField(
             onChanged: (value) {
               filterSearchResults(value);
@@ -187,8 +268,8 @@ class _StoreItemState extends State<StoreItem> {
                           return GestureDetector(
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        AddItem(!_isEdit, itemsIdList[index])));
+                                    builder: (context) => AddItem(_isEdit,
+                                        itemsIdList[index], widget._storeId)));
                               },
                               child: Container(
                                   padding: const EdgeInsets.fromLTRB(
@@ -270,8 +351,8 @@ class _StoreItemState extends State<StoreItem> {
                           return (GestureDetector(
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        AddItem(!_isEdit, itemsIdList[index])));
+                                    builder: (context) => AddItem(_isEdit,
+                                        itemsIdList[index], widget._storeId)));
                               },
                               child: Container(
                                   padding: const EdgeInsets.fromLTRB(
