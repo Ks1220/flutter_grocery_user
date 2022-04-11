@@ -136,13 +136,6 @@ class _StoreItemState extends State<StoreItem> {
             color: Colors.white,
             border: Border.all(color: Colors.black38),
             borderRadius: BorderRadius.circular(5),
-            // boxShadow: [
-            //   BoxShadow(
-            //       color: Colors.black54,
-            //       spreadRadius: 2,
-            //       blurRadius: 15.0,
-            //       offset: Offset(0.0, 0.75)),
-            // ],
             boxShadow: kElevationToShadow[4],
           ),
           child: Padding(
@@ -175,7 +168,7 @@ class _StoreItemState extends State<StoreItem> {
                   thickness: 2,
                 ),
                 Container(
-                  width: MediaQuery.of(context).size.width * 0.6,
+                  width: MediaQuery.of(context).size.width * 0.65,
                   child: Column(
                     children: [
                       Container(
@@ -189,7 +182,7 @@ class _StoreItemState extends State<StoreItem> {
                             ),
                           ),
                         ),
-                        width: MediaQuery.of(context).size.width * 0.6,
+                        width: MediaQuery.of(context).size.width * 0.65,
                       ),
                       Container(
                         child: RichText(
