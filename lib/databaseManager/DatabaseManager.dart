@@ -4,14 +4,11 @@ class DatabaseManager {
   final CollectionReference groceryList =
       FirebaseFirestore.instance.collection('Items');
 
-  Future getGroceryList(currentUser) async {
+  Future getGroceryList(uid) async {
     List itemsList = [];
 
     try {
-      Query query = groceryList
-          .doc(currentUser!.uid)
-          .collection('Item')
-          .orderBy("itemName");
+      Query query = groceryList.doc(uid).collection('Item').orderBy("itemName");
       await query.get().then((docs) {
         docs.docs.forEach((doc) {
           itemsList.add(doc);

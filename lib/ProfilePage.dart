@@ -37,7 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   TextEditingController _nameController = TextEditingController();
   TextEditingController _storeNameController = TextEditingController();
-  TextEditingController _storeAddressController = TextEditingController();
+  TextEditingController _shippingAddressController = TextEditingController();
 
   File? _imageFile;
   late String imageUrl;
@@ -94,19 +94,14 @@ class _ProfilePageState extends State<ProfilePage> {
                               child: Container(
                                   width: MediaQuery.of(context).size.width,
                                   height: 70,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "Log Out Successfully",
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
+                                  child: Center(
+                                    child: Text(
+                                      "Log Out Successfully",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
                                       ),
-                                    ],
+                                    ),
                                   )),
                             );
                           },
@@ -129,117 +124,6 @@ class _ProfilePageState extends State<ProfilePage> {
         );
       },
     );
-  }
-
-  showMyDialog() async {
-    return showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return Align(
-          alignment: FractionalOffset.bottomCenter,
-          child: SimpleDialog(
-            children: <Widget>[
-              SimpleDialogOption(
-                onPressed: () {
-                  pickImage(ImageSource.gallery);
-                  Navigator.pop(context, _imageFile != null);
-                },
-                child: Row(children: [
-                  Icon(
-                    Icons.image,
-                    size: 20,
-                    color: Colors.black,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    'Select from Gallery',
-                    style: TextStyle(fontSize: 15),
-                  )
-                ]),
-              ),
-              SimpleDialogOption(
-                onPressed: () {
-                  pickImage(ImageSource.camera);
-                  Navigator.pop(context, _imageFile != null);
-                },
-                child: Row(children: [
-                  Icon(
-                    Icons.camera_alt,
-                    size: 20,
-                    color: Colors.black,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    'Take Image',
-                    style: TextStyle(fontSize: 15),
-                  )
-                ]),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  pickImage(ImageSource source) async {
-    try {
-      final image = await ImagePicker().pickImage(source: source);
-      if (image == null) return;
-      setState(() => _imageFile = File(image.path));
-      String fileName = Path.basename(_imageFile!.path);
-
-      Reference firebaseStorageRef =
-          FirebaseStorage.instance.ref().child('$fileName');
-      await firebaseStorageRef.putFile(File(image.path));
-      setState(() async {
-        imageUrl = await firebaseStorageRef.getDownloadURL();
-
-        await FirebaseFirestore.instance
-            .collection('UserData')
-            .doc(widget.currentUser?.uid)
-            .update({"shopLogo": imageUrl}).then((value) => {
-                  showFlash(
-                    context: context,
-                    duration: const Duration(seconds: 2),
-                    builder: (context, controller) {
-                      return Flash.bar(
-                        controller: controller,
-                        backgroundColor: Colors.green,
-                        position: FlashPosition.top,
-                        child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 70,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Shop Logo Updated Successfully",
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ],
-                            )),
-                      );
-                    },
-                  ).then((value) {
-                    Future.delayed(const Duration(seconds: 2), () {});
-                  })
-                });
-        setState(() {});
-      });
-      return imageUrl;
-    } on PlatformException catch (e) {
-      print("Failed to pick image: $e");
-    }
   }
 
   @override
@@ -267,56 +151,19 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             FutureBuilder(
               future: getData(),
-              builder: (BuildContext context, snapshot) {
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
                 _nameController.text =
                     (snapshot.data as Map<String, dynamic>)['name'];
-                _storeNameController.text =
-                    (snapshot.data as Map<String, dynamic>)['storeName'];
-                _storeAddressController.text =
-                    (snapshot.data as Map<String, dynamic>)['storeAddress'];
+
+                _shippingAddressController.text =
+                    (snapshot.data as Map<String, dynamic>)['shippingAddress'];
                 imageUrl = (snapshot.data as Map<String, dynamic>)['shopLogo'];
 
                 if (snapshot.hasData) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircularProgressIndicator(),
-                      ],
-                    );
+                    return Center(child: CircularProgressIndicator());
                   } else if (snapshot.connectionState == ConnectionState.done) {
                     return Column(children: [
-                      Container(
-                        margin: EdgeInsets.fromLTRB(0, 10.0, 0, 20),
-                        child: CircleAvatar(
-                          radius: 50.0,
-                          child: ClipRRect(
-                            child: Image(
-                              height: 100,
-                              width: 100,
-                              image: NetworkImage(imageUrl),
-                              fit: BoxFit.fill,
-                            ),
-                            borderRadius: BorderRadius.circular(50.0),
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          showMyDialog();
-                        },
-                        child: Container(
-                          margin: EdgeInsets.fromLTRB(0, 0, 0, 30),
-                          child: Text(
-                            "Change Logo Photo",
-                            style: const TextStyle(
-                              color: Colors.blue,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ),
                       ListTile(
                         onTap: () {
                           showModalBottomSheet(
@@ -338,7 +185,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       Row(
                                         children: [
                                           Text(
-                                            'Merchant Name',
+                                            'UserName',
                                             style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold),
@@ -445,7 +292,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                                           .center,
                                                                   children: [
                                                                     Text(
-                                                                      "Merchant Name Updated Successfully",
+                                                                      "User Name Updated Successfully",
                                                                       style:
                                                                           const TextStyle(
                                                                         color: Colors
@@ -484,13 +331,16 @@ class _ProfilePageState extends State<ProfilePage> {
                           top: BorderSide(
                               color: Color.fromARGB(255, 199, 199, 199),
                               width: 1),
+                          bottom: BorderSide(
+                              color: Color.fromARGB(255, 199, 199, 199),
+                              width: 1),
                         ),
                         leading: (Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "Merchant Name",
+                              "UserName",
                               style: const TextStyle(
                                   fontSize: 15, fontWeight: FontWeight.w700),
                             ),
@@ -501,207 +351,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           children: <Widget>[
                             Text(
                               (snapshot.data as Map<String, dynamic>)['name'],
-                              style: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.grey),
-                            ),
-                            Icon(
-                              Icons.chevron_right,
-                              size: 26,
-                              color: Colors.black,
-                            )
-                          ],
-                        ),
-                      ),
-                      ListTile(
-                        onTap: () {
-                          showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              builder: (BuildContext context) {
-                                return SingleChildScrollView(
-                                    child: Container(
-                                  padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context)
-                                        .viewInsets
-                                        .bottom,
-                                    left: 20,
-                                    right: 20,
-                                    top: 10,
-                                  ),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Row(
-                                        children: [
-                                          Text(
-                                            'Store Name',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Spacer(),
-                                          IconButton(
-                                            icon: const Icon(Icons.close),
-                                            tooltip: 'Close',
-                                            iconSize: 30,
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 10),
-                                      Form(
-                                        key: _formKey,
-                                        child: TextFormField(
-                                          controller: _storeNameController,
-                                          validator: (input) {
-                                            if (input!.isEmpty)
-                                              return 'Please enter a Store Name';
-                                          },
-                                          decoration: InputDecoration(
-                                              focusedErrorBorder:
-                                                  OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.red),
-                                              ),
-                                              errorBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.red),
-                                              ),
-                                              errorStyle:
-                                                  TextStyle(height: 0.4),
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 20.0),
-                                              enabledBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Colors.grey)),
-                                              focusColor: Colors.grey,
-                                              focusedBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                color: Colors.grey,
-                                              )),
-                                              labelText: "Enter Store Name",
-                                              labelStyle:
-                                                  TextStyle(color: Colors.grey),
-                                              prefixIcon: Icon(Icons.store,
-                                                  color: Colors.grey)),
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      ButtonTheme(
-                                        buttonColor: Color(0xff2C6846),
-                                        minWidth:
-                                            MediaQuery.of(context).size.width *
-                                                0.92,
-                                        height: 55.0,
-                                        child: RaisedButton(
-                                          padding: EdgeInsets.fromLTRB(
-                                              70, 10, 70, 10),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                new BorderRadius.circular(5.0),
-                                          ),
-                                          onPressed: () async {
-                                            if (_formKey.currentState!
-                                                .validate()) {
-                                              await FirebaseFirestore.instance
-                                                  .collection('UserData')
-                                                  .doc(widget.currentUser?.uid)
-                                                  .update({
-                                                "storeName":
-                                                    _storeNameController.text,
-                                              }).then((value) => showFlash(
-                                                        context: context,
-                                                        duration:
-                                                            const Duration(
-                                                                seconds: 2),
-                                                        builder: (context,
-                                                            controller) {
-                                                          return Flash.bar(
-                                                            controller:
-                                                                controller,
-                                                            backgroundColor:
-                                                                Colors.green,
-                                                            position:
-                                                                FlashPosition
-                                                                    .top,
-                                                            child: Container(
-                                                                width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                                height: 70,
-                                                                child: Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    Text(
-                                                                      "Store Name Updated Successfully",
-                                                                      style:
-                                                                          const TextStyle(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            18,
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                )),
-                                                          );
-                                                        },
-                                                      ));
-                                              Future.delayed(
-                                                  const Duration(seconds: 2),
-                                                  () {});
-                                              Navigator.of(context).pop();
-                                            }
-                                          },
-                                          child: Text('Save',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w600)),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 30,
-                                      )
-                                    ],
-                                  ),
-                                ));
-                              });
-                        },
-                        shape: Border(
-                            top: BorderSide(
-                                color: Color.fromARGB(255, 199, 199, 199),
-                                width: 1),
-                            bottom: BorderSide(
-                                color: Color.fromARGB(255, 199, 199, 199),
-                                width: 1)),
-                        leading: (Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Store Name",
-                              style: const TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.w700),
-                            ),
-                          ],
-                        )),
-                        trailing: Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              (snapshot.data
-                                  as Map<String, dynamic>)['storeName'],
                               style: const TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w600,
@@ -765,7 +414,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       Row(
                                         children: [
                                           Text(
-                                            'Address',
+                                            'Shipping Address',
                                             style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold),
@@ -785,10 +434,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                       Form(
                                         key: _formKey,
                                         child: TextFormField(
-                                          controller: _storeAddressController,
+                                          controller:
+                                              _shippingAddressController,
                                           validator: (input) {
                                             if (input!.isEmpty)
-                                              return 'Please enter Store Address';
+                                              return 'Please enter Shipping Address';
                                           },
                                           maxLines: 4,
                                           decoration: InputDecoration(
@@ -814,7 +464,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   borderSide: BorderSide(
                                                 color: Colors.grey,
                                               )),
-                                              labelText: "Enter Store Address",
+                                              labelText:
+                                                  "Enter Shipping Address",
                                               labelStyle:
                                                   TextStyle(color: Colors.grey),
                                               prefixIcon: Icon(
@@ -843,8 +494,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   .collection('UserData')
                                                   .doc(widget.currentUser?.uid)
                                                   .update({
-                                                "storeAddress":
-                                                    _storeAddressController
+                                                "shippingAddress":
+                                                    _shippingAddressController
                                                         .text,
                                               }).then((value) => showFlash(
                                                         context: context,
@@ -876,7 +527,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                                           .center,
                                                                   children: [
                                                                     Text(
-                                                                      "Store Address Updated Successfully",
+                                                                      "Shipping Address Updated Successfully",
                                                                       style:
                                                                           const TextStyle(
                                                                         color: Colors
@@ -920,7 +571,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "Address",
+                              "Shipping Address",
                               style: const TextStyle(
                                   fontSize: 15, fontWeight: FontWeight.w700),
                             ),
@@ -933,7 +584,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               width: 160.0,
                               child: Text(
                                 (snapshot.data
-                                    as Map<String, dynamic>)['storeAddress'],
+                                    as Map<String, dynamic>)['shippingAddress'],
                                 overflow: TextOverflow.fade,
                                 softWrap: false,
                                 style: const TextStyle(

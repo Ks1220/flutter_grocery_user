@@ -18,18 +18,14 @@ class AuthService {
           child: Container(
               width: MediaQuery.of(context).size.width,
               height: 70,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    errormessage.toString(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
+              child: Center(
+                child: Text(
+                  errormessage.toString(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
                   ),
-                ],
+                ),
               )),
         );
       },

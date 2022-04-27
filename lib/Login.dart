@@ -221,18 +221,14 @@ class _LoginState extends State<Login> {
             child: Container(
                 width: MediaQuery.of(context).size.width,
                 height: 70,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Sign In Successfully",
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                      ),
+                child: Center(
+                  child: Text(
+                    "Sign In Successfully",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
                     ),
-                  ],
+                  ),
                 )),
           );
         },
