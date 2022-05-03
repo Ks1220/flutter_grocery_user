@@ -83,7 +83,6 @@ class _StoreItemState extends State<StoreItem> {
 
     await shopDetails.get().then((docs) {
       setState(() {
-        print("THIS IS DOCS: ${docs["storeName"]}");
         storeName = docs["storeName"];
         storeAddress = docs["storeAddress"];
         shopLogo = docs["shopLogo"];
@@ -278,7 +277,7 @@ class _StoreItemState extends State<StoreItem> {
                                         ? "${items[index]["itemName"]}"
                                         : ""),
                                     subtitle: Text(items.length > 0
-                                        ? "${items[index]["price"]}/${items[index]["measurementMatrix"]}"
+                                        ? "RM ${items[index]["price"]}/${items[index]["measurementMatrix"]}"
                                         : ""),
                                     leading: (CachedNetworkImage(
                                       width: 65,
@@ -352,40 +351,40 @@ class _StoreItemState extends State<StoreItem> {
                                       0.0, 15.0, 30, 0.0),
                                   height: 90,
                                   child: ListTile(
-                                      shape: Border(
-                                          bottom: BorderSide(
-                                              color: Color.fromARGB(
-                                                  255, 199, 199, 199),
-                                              width: 1)),
-                                      title: Text(
-                                        items[index] != null
-                                            ? "${items[index]["itemName"]}"
-                                            : "",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      leading: (CachedNetworkImage(
+                                    shape: Border(
+                                        bottom: BorderSide(
+                                            color: Color.fromARGB(
+                                                255, 199, 199, 199),
+                                            width: 1)),
+                                    title: Text(items.length > 0
+                                        ? "${items[index]["itemName"]}"
+                                        : ""),
+                                    subtitle: Text(items.length > 0
+                                        ? "RM ${items[index]["price"]}/${items[index]["measurementMatrix"]}"
+                                        : ""),
+                                    leading: (CachedNetworkImage(
+                                      width: 65,
+                                      height: 65,
+                                      imageUrl: items[index]["itemImage"],
+                                      progressIndicatorBuilder:
+                                          (context, url, downloadProgress) =>
+                                              SizedBox(
                                         width: 65,
                                         height: 65,
-                                        imageUrl: items[index]["itemImage"],
-                                        progressIndicatorBuilder:
-                                            (context, url, downloadProgress) =>
-                                                SizedBox(
-                                          width: 65,
-                                          height: 65,
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.black26,
-                                            ),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.black26,
                                           ),
                                         ),
-                                        fit: BoxFit.fill,
-                                        errorWidget: (context, url, error) =>
-                                            Icon(Icons.error),
-                                      )),
-                                      trailing: Text(items[index] != null
-                                          ? "${items[index]["price"]}/${items[index]["measurementMatrix"]}"
-                                          : "")))));
+                                      ),
+                                      fit: BoxFit.fill,
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
+                                    )),
+                                    trailing: Text(items.length > 0
+                                        ? "Stock: ${items[index]["stockAmount"]}"
+                                        : ""),
+                                  ))));
                         },
                       )),
       ]),
