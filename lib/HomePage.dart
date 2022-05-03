@@ -56,12 +56,6 @@ class _HomePageState extends State<HomePage> {
         ImageConfiguration(), 'images/marker.png');
   }
 
-  // static final CameraPosition _kLake = CameraPosition(
-  //     bearing: 192.8334901395799,
-  //     target: LatLng(37.43296265331129, -122.08832357078792),
-  //     tilt: 59.440717697143555,
-  //     zoom: 19.151926040649414);
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -351,6 +345,9 @@ class _HomePageState extends State<HomePage> {
               onTap: (position) {
                 _customInfoWindowController.hideInfoWindow!();
               },
+              onCameraMove: (CameraPosition cameraPositiona) {
+                _customInfoWindowController.hideInfoWindow!();
+              },
               mapType: MapType.hybrid,
               initialCameraPosition: _kGooglePlex,
               onMapCreated: _onMapCreated,
@@ -364,14 +361,6 @@ class _HomePageState extends State<HomePage> {
           ]),
         ),
       ]),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     getMerchantData();
-      //   },
-      //   tooltip: 'Add Grocery Item',
-      //   backgroundColor: Color(0xff2C6846),
-      //   child: Icon(Icons.add),
-      // ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
