@@ -23,7 +23,6 @@ class _StoreItemState extends State<StoreItem> {
   TextEditingController searchController = TextEditingController();
 
   bool isLoggedin = true;
-  bool _isEdit = false;
 
   List groceryItemList = [];
   List nameList = [];
@@ -260,7 +259,7 @@ class _StoreItemState extends State<StoreItem> {
                           return GestureDetector(
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => AddItem(_isEdit,
+                                    builder: (context) => AddItem(
                                         itemsIdList[index], widget._storeId)));
                               },
                               child: Container(
@@ -343,7 +342,7 @@ class _StoreItemState extends State<StoreItem> {
                           return (GestureDetector(
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => AddItem(_isEdit,
+                                    builder: (context) => AddItem(
                                         itemsIdList[index], widget._storeId)));
                               },
                               child: Container(

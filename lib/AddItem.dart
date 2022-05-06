@@ -11,12 +11,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:collection/collection.dart';
 
 class AddItem extends StatefulWidget {
-  final bool _isEdit;
   final String _itemId;
   final String _storeId;
 
-  const AddItem(this._isEdit, this._itemId, this._storeId, {Key? key})
-      : super(key: key);
+  const AddItem(this._itemId, this._storeId, {Key? key}) : super(key: key);
 
   @override
   _AddItemState createState() => _AddItemState();
@@ -31,6 +29,7 @@ class _AddItemState extends State<AddItem> {
   int cartNumber = 0;
   double totalAmount = 0.00;
   List<double> allItemsPrice = [];
+  String storeName = '';
 
   String dropdownvalue = 'kg';
 
@@ -44,6 +43,7 @@ class _AddItemState extends State<AddItem> {
     super.initState();
     fetchItemId();
     fetchCartInfo();
+    getStoreName();
   }
 
   fetchCartInfo() {
@@ -81,6 +81,17 @@ class _AddItemState extends State<AddItem> {
         dropdownvalue = docs["measurementMatrix"];
       });
     });
+  }
+
+  getStoreName() async {
+    DocumentReference storeId = FirebaseFirestore.instance
+        .collection('MerchantData')
+        .doc(widget._storeId);
+    await storeId.get().then((docs) => {
+          setState(() {
+            storeName = docs['storeName'];
+          })
+        });
   }
 
   showError(BuildContext context, Object errormessage) {
@@ -227,7 +238,9 @@ class _AddItemState extends State<AddItem> {
                         "itemDescription": _itemDescriptionController.text,
                         "price": _itemPriceController.text,
                         "measurementMatrix": dropdownvalue,
-                        "itemCount": 1
+                        "itemCount": 1,
+                        "storeName": storeName,
+                        "id": widget._itemId
                       }).then((value) => {
                                 showFlash(
                                   context: context,
@@ -275,8 +288,6 @@ class _AddItemState extends State<AddItem> {
                                                     doc["itemCount"]),
                                             totalAmount = allItemsPrice.sum,
                                           });
-                                      print(
-                                          "THIS IS ALL ITEM PRICE: $allItemsPrice");
                                     });
                                   });
                                 })
@@ -336,8 +347,6 @@ class _AddItemState extends State<AddItem> {
                                                         doc["itemCount"]),
                                                 totalAmount = allItemsPrice.sum,
                                               });
-                                          print(
-                                              "THIS IS ALL ITEM PRICE: $allItemsPrice");
                                         });
                                       });
                                     })
