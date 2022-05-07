@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class DatabaseManager {
   final CollectionReference groceryList =
       FirebaseFirestore.instance.collection('Items');
+  final CollectionReference cartList =
+      FirebaseFirestore.instance.collection('Carts');
 
   Future getGroceryList(uid) async {
     List itemsList = [];
@@ -16,6 +18,16 @@ class DatabaseManager {
       });
 
       return itemsList;
+    } catch (e) {
+      print("Error: $e");
+      return null;
+    }
+  }
+
+  Stream? getCartList(uid) {
+    try {
+      Query query = cartList.doc(uid).collection('Item').orderBy("storeName");
+      return query.snapshots();
     } catch (e) {
       print("Error: $e");
       return null;

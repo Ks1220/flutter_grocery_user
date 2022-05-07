@@ -2,19 +2,19 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/src/iterable_extensions.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:collection/collection.dart';
 
 class AddItem extends StatefulWidget {
-  final bool _isEdit;
   final String _itemId;
   final String _storeId;
 
-  const AddItem(this._isEdit, this._itemId, this._storeId, {Key? key})
-      : super(key: key);
+  const AddItem(this._itemId, this._storeId, {Key? key}) : super(key: key);
 
   @override
   _AddItemState createState() => _AddItemState();
@@ -25,6 +25,11 @@ class _AddItemState extends State<AddItem> {
   File? _imageFile;
   late String imageUrl;
   DocumentSnapshot? groceryItem;
+
+  int cartNumber = 0;
+  double totalAmount = 0.00;
+  List<double> allItemsPrice = [];
+  String storeName = '';
 
   String dropdownvalue = 'kg';
 
@@ -37,6 +42,25 @@ class _AddItemState extends State<AddItem> {
   void initState() {
     super.initState();
     fetchItemId();
+    fetchCartInfo();
+    getStoreName();
+  }
+
+  fetchCartInfo() {
+    Query itemId = FirebaseFirestore.instance
+        .collection('Carts')
+        .doc(user!.uid)
+        .collection('Item');
+    itemId.get().then((docs) {
+      setState(() {
+        cartNumber = docs.size;
+
+        docs.docs.forEach((doc) => {
+              allItemsPrice.add(double.parse(doc["price"]) * doc["itemCount"]),
+              totalAmount = allItemsPrice.sum
+            });
+      });
+    });
   }
 
   fetchItemId() async {
@@ -57,6 +81,17 @@ class _AddItemState extends State<AddItem> {
         dropdownvalue = docs["measurementMatrix"];
       });
     });
+  }
+
+  getStoreName() async {
+    DocumentReference storeId = FirebaseFirestore.instance
+        .collection('MerchantData')
+        .doc(widget._storeId);
+    await storeId.get().then((docs) => {
+          setState(() {
+            storeName = docs['storeName'];
+          })
+        });
   }
 
   showError(BuildContext context, Object errormessage) {
@@ -97,7 +132,7 @@ class _AddItemState extends State<AddItem> {
         elevation: 0,
         backgroundColor: Colors.white,
       ),
-      body: SingleChildScrollView(
+      body: Container(
         child: Column(children: [
           Center(
             child: Column(
@@ -154,7 +189,7 @@ class _AddItemState extends State<AddItem> {
                         child: Align(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            _itemPriceController.text,
+                            "RM${_itemPriceController.text}",
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.w600),
                           ),
@@ -165,7 +200,7 @@ class _AddItemState extends State<AddItem> {
                         child: Align(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            "per $dropdownvalue",
+                            "/\t$dropdownvalue",
                             style: TextStyle(fontSize: 15),
                           ),
                         ),
@@ -183,11 +218,172 @@ class _AddItemState extends State<AddItem> {
                     ),
                     minimumSize: Size(120, 50),
                   ),
-                  onPressed: () {},
+                  onPressed: () async {
+                    final snapShot = await FirebaseFirestore.instance
+                        .collection('Carts')
+                        .doc(user!.uid)
+                        .collection('Item')
+                        .doc(widget._itemId)
+                        .get();
+
+                    if (snapShot == null || !snapShot.exists) {
+                      await FirebaseFirestore.instance
+                          .collection('Carts')
+                          .doc(user!.uid)
+                          .collection('Item')
+                          .doc(widget._itemId)
+                          .set({
+                        "itemName": _itemNameController.text,
+                        "itemImage": imageUrl,
+                        "itemDescription": _itemDescriptionController.text,
+                        "price": _itemPriceController.text,
+                        "measurementMatrix": dropdownvalue,
+                        "itemCount": 1,
+                        "storeName": storeName,
+                        "id": widget._itemId
+                      }).then((value) => {
+                                showFlash(
+                                  context: context,
+                                  duration: const Duration(seconds: 2),
+                                  builder: (context, controller) {
+                                    return Flash.bar(
+                                      controller: controller,
+                                      backgroundColor: Colors.green,
+                                      position: FlashPosition.top,
+                                      child: Container(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          height: 70,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                "Added Successfully",
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                            ],
+                                          )),
+                                    );
+                                  },
+                                ),
+                                setState(() {
+                                  allItemsPrice = [];
+                                  Query itemId = FirebaseFirestore.instance
+                                      .collection('Carts')
+                                      .doc(user!.uid)
+                                      .collection('Item');
+                                  itemId.get().then((docs) {
+                                    setState(() {
+                                      cartNumber = docs.size;
+
+                                      docs.docs.forEach((doc) => {
+                                            allItemsPrice.add(
+                                                double.parse(doc["price"]) *
+                                                    doc["itemCount"]),
+                                            totalAmount = allItemsPrice.sum,
+                                          });
+                                    });
+                                  });
+                                })
+                              });
+                    } else {
+                      await FirebaseFirestore.instance
+                          .collection('Carts')
+                          .doc(user!.uid)
+                          .collection('Item')
+                          .doc(widget._itemId)
+                          .update({"itemCount": FieldValue.increment(1)}).then(
+                              (value) => {
+                                    showFlash(
+                                      context: context,
+                                      duration: const Duration(seconds: 2),
+                                      builder: (context, controller) {
+                                        return Flash.bar(
+                                          controller: controller,
+                                          backgroundColor: Colors.green,
+                                          position: FlashPosition.top,
+                                          child: Container(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              height: 70,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    "Added Successfully",
+                                                    style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 18,
+                                                    ),
+                                                  ),
+                                                ],
+                                              )),
+                                        );
+                                      },
+                                    ),
+                                    setState(() {
+                                      allItemsPrice = [];
+                                      Query itemId = FirebaseFirestore.instance
+                                          .collection('Carts')
+                                          .doc(user!.uid)
+                                          .collection('Item');
+                                      itemId.get().then((docs) {
+                                        setState(() {
+                                          cartNumber = docs.size;
+
+                                          docs.docs.forEach((doc) => {
+                                                allItemsPrice.add(
+                                                    double.parse(doc["price"]) *
+                                                        doc["itemCount"]),
+                                                totalAmount = allItemsPrice.sum,
+                                              });
+                                        });
+                                      });
+                                    })
+                                  });
+                    }
+
+                    Future.delayed(const Duration(seconds: 2), () {});
+                  },
                   child: Text('Add to Cart'),
                 )),
               ],
             ),
+          ),
+          Expanded(
+            child: Align(
+                alignment: FractionalOffset.bottomCenter,
+                child: Container(
+                  margin: EdgeInsets.only(bottom: 20),
+                  child: ButtonTheme(
+                    minWidth: MediaQuery.of(context).size.width * 0.92,
+                    buttonColor: Color(0xff2C6846),
+                    height: 55.0,
+                    child: RaisedButton(
+                      padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(5.0),
+                      ),
+                      onPressed: () {},
+                      child: Text(
+                          'Cart \t\t\t.\t\t\t $cartNumber Item \t\t\t\t\t\t\t RM${totalAmount.toStringAsFixed(2)}',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600)),
+                    ),
+                  ),
+                )),
           ),
         ]),
       ),
