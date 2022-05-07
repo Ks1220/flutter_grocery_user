@@ -24,18 +24,10 @@ class DatabaseManager {
     }
   }
 
-  Future getCartList(uid) async {
-    List itemsList = [];
-
+  Stream? getCartList(uid) {
     try {
       Query query = cartList.doc(uid).collection('Item').orderBy("storeName");
-      await query.get().then((docs) {
-        docs.docs.forEach((doc) {
-          itemsList.add(doc);
-        });
-      });
-
-      return itemsList;
+      return query.snapshots();
     } catch (e) {
       print("Error: $e");
       return null;

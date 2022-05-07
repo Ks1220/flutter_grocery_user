@@ -69,6 +69,7 @@ class _CartState extends State<Cart> {
                     .doc(itemId)
                     .delete()
                     .then((value) => {
+                          Navigator.of(context).pop(),
                           showFlash(
                             context: context,
                             duration: const Duration(seconds: 2),
@@ -91,10 +92,7 @@ class _CartState extends State<Cart> {
                                     )),
                               );
                             },
-                          ),
-                          Future.delayed(const Duration(seconds: 2), () {
-                            Navigator.of(context).pop();
-                          })
+                          )
                         });
               },
             ),
@@ -130,7 +128,20 @@ class _CartState extends State<Cart> {
   }
 
   fetchGroceryItemList() async {
-    dynamic resultant = await DatabaseManager().getCartList(user!.uid);
+    Query query = FirebaseFirestore.instance
+        .collection('Carts')
+        .doc(user!.uid)
+        .collection('Item')
+        .orderBy("storeName");
+    List itemsList = [];
+    await query.get().then((docs) {
+      docs.docs.forEach((doc) {
+        itemsList.add(doc);
+      });
+    });
+
+    dynamic resultant = itemsList;
+
     if (resultant == null) {
       print("Unable to retrieve");
     } else {
@@ -185,283 +196,277 @@ class _CartState extends State<Cart> {
               ),
             )
           : Container(
-              child: ListView.builder(
-                itemCount: items.length,
-                itemBuilder: (ctx, index) {
-                  return Container(
-                      padding: const EdgeInsets.fromLTRB(0.0, 15.0, 15.0, 0.0),
-                      height: 120,
-                      child: ListTile(
-                          shape: Border(
-                              bottom: BorderSide(
-                                  color: Color.fromARGB(255, 199, 199, 199),
-                                  width: 1)),
-                          title: Text(
-                            items.length > 0
-                                ? "${items[index]["itemName"]}"
-                                : "",
-                            style: TextStyle(fontWeight: FontWeight.w700),
-                          ),
-                          subtitle: RichText(
-                            text: TextSpan(
-                              children: [
-                                WidgetSpan(
-                                  child: SizedBox(height: 20),
-                                ),
-                                TextSpan(
-                                    style: TextStyle(color: Colors.black),
-                                    text:
-                                        "RM ${items[index]["price"]}/${items[index]["measurementMatrix"]} \n"),
-                                WidgetSpan(
-                                  child: SizedBox(height: 35),
-                                ),
-                                WidgetSpan(
-                                  child: Icon(
-                                    Icons.store,
-                                    color: Colors.black54,
-                                  ),
-                                ),
-                                WidgetSpan(
-                                  child: Transform.translate(
-                                    offset: const Offset(0.0, -3.0),
-                                    child: Text(
-                                      " ${items[index]["storeName"]}",
-                                      style: TextStyle(color: Colors.black54),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          leading: (CachedNetworkImage(
-                            width: 65,
-                            height: 120,
-                            imageUrl: items[index]["itemImage"],
-                            progressIndicatorBuilder:
-                                (context, url, downloadProgress) => SizedBox(
-                              width: 65,
+              child: StreamBuilder(
+                  stream: DatabaseManager().getCartList(user!.uid),
+                  builder: (context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (ctx, index) {
+                          return Container(
+                              padding: const EdgeInsets.fromLTRB(
+                                  0.0, 15.0, 15.0, 0.0),
                               height: 120,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.black26,
-                                ),
-                              ),
-                            ),
-                            fit: BoxFit.fill,
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
-                          )),
-                          trailing: Transform.translate(
-                            offset: const Offset(0.0, 5.0),
-                            child: Wrap(
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              alignment: WrapAlignment.spaceEvenly,
-                              children: <Widget>[
-                                SizedBox(
-                                  height: 30,
-                                  width: 30,
-                                  child: Visibility(
-                                      visible: items[index]['itemCount'] != 1
-                                          ? true
-                                          : false,
-                                      child: FloatingActionButton(
-                                        onPressed: (() async {
-                                          await FirebaseFirestore.instance
-                                              .collection('Carts')
-                                              .doc(user!.uid)
-                                              .collection('Item')
-                                              .doc(items[index]['id'])
-                                              .update({
-                                            "itemCount":
-                                                FieldValue.increment(-1)
-                                          }).then((value) => {
-                                                    showFlash(
-                                                      context: context,
-                                                      duration: const Duration(
-                                                          seconds: 2),
-                                                      builder: (context,
-                                                          controller) {
-                                                        return Flash.bar(
-                                                          controller:
-                                                              controller,
-                                                          backgroundColor:
-                                                              Colors.red,
-                                                          position:
-                                                              FlashPosition.top,
-                                                          child: Container(
-                                                              width:
-                                                                  MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width,
-                                                              height: 70,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  Text(
-                                                                    "Remove Successfully",
-                                                                    style:
-                                                                        const TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize:
-                                                                          18,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              )),
-                                                        );
-                                                      },
-                                                    ),
-                                                    // setState(() {
-                                                    //   allItemsPrice = [];
-                                                    //   Query itemId = FirebaseFirestore.instance
-                                                    //       .collection('Carts')
-                                                    //       .doc(user!.uid)
-                                                    //       .collection('Item');
-                                                    //   itemId.get().then((docs) {
-                                                    //     setState(() {
-                                                    //       cartNumber = docs.size;
-
-                                                    //       docs.docs.forEach((doc) => {
-                                                    //             allItemsPrice.add(
-                                                    //                 double.parse(doc["price"]) *
-                                                    //                     doc["itemCount"]),
-                                                    //             totalAmount = allItemsPrice.sum,
-                                                    //           });
-                                                    //     });
-                                                    //   });
-                                                    // })
-                                                  });
-                                        }),
-                                        child: Icon(Icons.remove,
-                                            size: 15, color: Colors.black),
-                                        backgroundColor: Colors.white,
-                                      )),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text('${items[index]["itemCount"]}',
-                                    style: new TextStyle(fontSize: 25.0)),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                SizedBox(
-                                    height: 30,
-                                    width: 30,
-                                    child: FloatingActionButton(
-                                      onPressed: (() async {
-                                        await FirebaseFirestore.instance
-                                            .collection('Carts')
-                                            .doc(user!.uid)
-                                            .collection('Item')
-                                            .doc(items[index]['id'])
-                                            .update({
-                                          "itemCount": FieldValue.increment(1)
-                                        }).then((value) => {
-                                                  showFlash(
-                                                    context: context,
-                                                    duration: const Duration(
-                                                        seconds: 2),
-                                                    builder:
-                                                        (context, controller) {
-                                                      return Flash.bar(
-                                                        controller: controller,
-                                                        backgroundColor:
-                                                            Colors.green,
-                                                        position:
-                                                            FlashPosition.top,
-                                                        child: Container(
-                                                            width:
-                                                                MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                            height: 70,
-                                                            child: Column(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Text(
-                                                                  "Added Successfully",
-                                                                  style:
-                                                                      const TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        18,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            )),
-                                                      );
-                                                    },
-                                                  ),
-                                                  // setState(() {
-                                                  //   allItemsPrice = [];
-                                                  //   Query itemId = FirebaseFirestore.instance
-                                                  //       .collection('Carts')
-                                                  //       .doc(user!.uid)
-                                                  //       .collection('Item');
-                                                  //   itemId.get().then((docs) {
-                                                  //     setState(() {
-                                                  //       cartNumber = docs.size;
-
-                                                  //       docs.docs.forEach((doc) => {
-                                                  //             allItemsPrice.add(
-                                                  //                 double.parse(doc["price"]) *
-                                                  //                     doc["itemCount"]),
-                                                  //             totalAmount = allItemsPrice.sum,
-                                                  //           });
-                                                  //     });
-                                                  //   });
-                                                  // })
-                                                });
-                                      }),
-                                      child: new Icon(
-                                        Icons.add,
-                                        size: 15,
-                                        color: Colors.black,
-                                      ),
-                                      backgroundColor: Colors.white,
-                                    )),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                ElevatedButton(
-                                  onPressed: (() {
-                                    showDeleteItemsDialog(items[index]['id']);
-                                  }),
-                                  child: Icon(
-                                    Icons.clear,
-                                    color: Colors.white,
-                                    size: 18,
+                              child: ListTile(
+                                  shape: Border(
+                                      bottom: BorderSide(
+                                          color: Color.fromARGB(
+                                              255, 199, 199, 199),
+                                          width: 1)),
+                                  title: Text(
+                                    "${snapshot.data!.docs[index]["itemName"]}",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w700),
                                   ),
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Color(0xff2C6846),
-                                    elevation: 3,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          new BorderRadius.circular(5.0),
+                                  subtitle: RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        WidgetSpan(
+                                          child: SizedBox(height: 20),
+                                        ),
+                                        TextSpan(
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                            text:
+                                                "RM ${snapshot.data!.docs[index]["price"]}/${snapshot.data!.docs[index]["measurementMatrix"]} \n"),
+                                        WidgetSpan(
+                                          child: SizedBox(height: 35),
+                                        ),
+                                        WidgetSpan(
+                                          child: Icon(
+                                            Icons.store,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                        WidgetSpan(
+                                          child: Transform.translate(
+                                            offset: const Offset(0.0, -3.0),
+                                            child: Text(
+                                              " ${snapshot.data!.docs[index]["storeName"]}",
+                                              style: TextStyle(
+                                                  color: Colors.black54),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    minimumSize: Size(30, 45),
                                   ),
-                                ),
-                              ],
-                            ),
-                          )));
-                },
-              ),
+                                  leading: (CachedNetworkImage(
+                                    width: 65,
+                                    height: 120,
+                                    imageUrl: snapshot.data!.docs[index]
+                                        ["itemImage"],
+                                    progressIndicatorBuilder:
+                                        (context, url, downloadProgress) =>
+                                            SizedBox(
+                                      width: 65,
+                                      height: 120,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.black26,
+                                        ),
+                                      ),
+                                    ),
+                                    fit: BoxFit.fill,
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
+                                  )),
+                                  trailing: Transform.translate(
+                                    offset: const Offset(0.0, 10.0),
+                                    child: Wrap(
+                                      crossAxisAlignment:
+                                          WrapCrossAlignment.center,
+                                      alignment: WrapAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        SizedBox(
+                                          height: 25,
+                                          width: 25,
+                                          child: Visibility(
+                                              visible:
+                                                  snapshot.data!.docs[index]
+                                                              ['itemCount'] !=
+                                                          1
+                                                      ? true
+                                                      : false,
+                                              child: FloatingActionButton(
+                                                onPressed: (() async {
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection('Carts')
+                                                      .doc(user!.uid)
+                                                      .collection('Item')
+                                                      .doc(snapshot.data!
+                                                          .docs[index]['id'])
+                                                      .update({
+                                                    "itemCount":
+                                                        FieldValue.increment(-1)
+                                                  }).then((value) => {
+                                                            showFlash(
+                                                              context: context,
+                                                              duration:
+                                                                  const Duration(
+                                                                      seconds:
+                                                                          2),
+                                                              builder: (context,
+                                                                  controller) {
+                                                                return Flash
+                                                                    .bar(
+                                                                  controller:
+                                                                      controller,
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .red,
+                                                                  position:
+                                                                      FlashPosition
+                                                                          .top,
+                                                                  child:
+                                                                      Container(
+                                                                          width: MediaQuery.of(context)
+                                                                              .size
+                                                                              .width,
+                                                                          height:
+                                                                              70,
+                                                                          child:
+                                                                              Column(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.center,
+                                                                            crossAxisAlignment:
+                                                                                CrossAxisAlignment.center,
+                                                                            children: [
+                                                                              Text(
+                                                                                "Remove Successfully",
+                                                                                style: const TextStyle(
+                                                                                  color: Colors.white,
+                                                                                  fontSize: 18,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          )),
+                                                                );
+                                                              },
+                                                            ),
+                                                          });
+                                                }),
+                                                child: Icon(Icons.remove,
+                                                    size: 15,
+                                                    color: Colors.black),
+                                                backgroundColor: Colors.white,
+                                              )),
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                            '${snapshot.data!.docs[index]["itemCount"]}',
+                                            style:
+                                                new TextStyle(fontSize: 20.0)),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        SizedBox(
+                                            height: 25,
+                                            width: 25,
+                                            child: FloatingActionButton(
+                                              onPressed: (() async {
+                                                await FirebaseFirestore.instance
+                                                    .collection('Carts')
+                                                    .doc(user!.uid)
+                                                    .collection('Item')
+                                                    .doc(snapshot.data!
+                                                        .docs[index]['id'])
+                                                    .update({
+                                                  "itemCount":
+                                                      FieldValue.increment(1)
+                                                }).then((value) => {
+                                                          showFlash(
+                                                            context: context,
+                                                            duration:
+                                                                const Duration(
+                                                                    seconds: 2),
+                                                            builder: (context,
+                                                                controller) {
+                                                              return Flash.bar(
+                                                                controller:
+                                                                    controller,
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .green,
+                                                                position:
+                                                                    FlashPosition
+                                                                        .top,
+                                                                child:
+                                                                    Container(
+                                                                        width: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width,
+                                                                        height:
+                                                                            70,
+                                                                        child:
+                                                                            Column(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.center,
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.center,
+                                                                          children: [
+                                                                            Text(
+                                                                              "Added Successfully",
+                                                                              style: const TextStyle(
+                                                                                color: Colors.white,
+                                                                                fontSize: 18,
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        )),
+                                                              );
+                                                            },
+                                                          ),
+                                                        });
+                                              }),
+                                              child: new Icon(
+                                                Icons.add,
+                                                size: 15,
+                                                color: Colors.black,
+                                              ),
+                                              backgroundColor: Colors.white,
+                                            )),
+                                        SizedBox(
+                                          width: 20,
+                                        ),
+                                        SizedBox.fromSize(
+                                          size: Size(30, 30),
+                                          child: Material(
+                                            color: Color(0xff2C6846),
+                                            child: InkWell(
+                                              splashColor: Colors.green,
+                                              onTap: () {
+                                                showDeleteItemsDialog(snapshot
+                                                    .data!.docs[index]['id']);
+                                              }, // button pressed
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Icon(
+                                                    Icons.clear,
+                                                    size: 18,
+                                                    color: Colors.white,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )));
+                        },
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text('no data');
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  }),
             ),
     );
   }
