@@ -52,6 +52,7 @@ dependencies:
     cached_network_image: ^3.2.0
     google_place: ^0.4.7
     requests: ^4.3.0
+    flutter_dotenv: ^5.0.2
 
 dev_dependencies:
     flutter_test:
@@ -70,6 +71,7 @@ flutter:
     # To add assets to your application, add an assets section, like this:
     assets:
         - images/
+        - .env
     #   - images/a_dot_ham.jpeg
 
     # An image asset can refer to one or more resolution-specific "variants", see

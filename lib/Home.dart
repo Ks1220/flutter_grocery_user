@@ -14,6 +14,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_place/google_place.dart';
 import 'package:requests/requests.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'StoreItem.dart';
 
@@ -57,7 +58,7 @@ class _HomeState extends State<Home> {
   late GooglePlace googlePlace;
   List predictions = [];
 
-  String apiKey = 'AIzaSyACU68cdhBZtRcHUUswCJZFnGnuxB0nblY';
+  String? apiKey;
 
   void setCustomMarker() async {
     mapMarker = await BitmapDescriptor.fromAssetImage(
@@ -72,6 +73,7 @@ class _HomeState extends State<Home> {
     _getCurrentLocation();
     getMerchantData();
     setCustomMarker();
+    getApiKey();
   }
 
   void findPlace(String placeName) async {
@@ -87,6 +89,12 @@ class _HomeState extends State<Home> {
         });
       }
     }
+  }
+
+  void getApiKey() async {
+    await dotenv.load(fileName: ".env");
+
+    apiKey = dotenv.env["GOOGLE_API"];
   }
 
   @override
