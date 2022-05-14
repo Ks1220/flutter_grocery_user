@@ -131,6 +131,119 @@ class _AddItemState extends State<AddItem> {
             style: TextStyle(color: Colors.black)),
         elevation: 0,
         backgroundColor: Colors.white,
+        actions: <Widget>[
+          MaterialButton(
+            onPressed: () async {
+              final snapShot = await FirebaseFirestore.instance
+                  .collection('Favourite')
+                  .doc(user!.uid)
+                  .collection('Item')
+                  .doc(widget._itemId)
+                  .get();
+
+              if (snapShot == null || !snapShot.exists) {
+                await FirebaseFirestore.instance
+                    .collection('Favourite')
+                    .doc(user!.uid)
+                    .collection('Item')
+                    .doc(widget._itemId)
+                    .set({
+                  "itemName": _itemNameController.text,
+                  "itemImage": imageUrl,
+                  "itemDescription": _itemDescriptionController.text,
+                  "price": _itemPriceController.text,
+                  "measurementMatrix": dropdownvalue,
+                  "itemCount": 1,
+                  "storeName": storeName,
+                  "id": widget._itemId
+                }).then((value) => {
+                          showFlash(
+                            context: context,
+                            duration: const Duration(seconds: 2),
+                            builder: (context, controller) {
+                              return Flash.bar(
+                                controller: controller,
+                                backgroundColor: Colors.green,
+                                position: FlashPosition.top,
+                                child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 70,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "Added to Favourite",
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      ],
+                                    )),
+                              );
+                            },
+                          ),
+                        });
+              } else {
+                await FirebaseFirestore.instance
+                    .collection('Favourite')
+                    .doc(user!.uid)
+                    .collection('Item')
+                    .doc(widget._itemId)
+                    .delete()
+                    .then((value) => {
+                          showFlash(
+                            context: context,
+                            duration: const Duration(seconds: 2),
+                            builder: (context, controller) {
+                              return Flash.bar(
+                                controller: controller,
+                                backgroundColor: Colors.red,
+                                position: FlashPosition.top,
+                                child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 70,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "Removed from Favourite",
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      ],
+                                    )),
+                              );
+                            },
+                          ),
+                        });
+              }
+
+              Future.delayed(const Duration(seconds: 2), () {});
+            },
+            child: Row(children: <Widget>[
+              Icon(Icons.star, size: 25, color: Color(0xffFFCE31)),
+              Center(
+                  child: Padding(
+                padding: EdgeInsets.fromLTRB(5, 0, 3, 0),
+                child: Text("Add to Favourite",
+                    style: TextStyle(
+                        color: Color(0xffFFCE31),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15),
+                    textAlign: TextAlign.center),
+              ))
+            ]),
+          )
+        ],
       ),
       body: Container(
         child: Column(children: [
@@ -261,7 +374,7 @@ class _AddItemState extends State<AddItem> {
                                                 CrossAxisAlignment.center,
                                             children: [
                                               Text(
-                                                "Added Successfully",
+                                                "Added to Cart Successfully",
                                                 style: const TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 18,
@@ -320,7 +433,7 @@ class _AddItemState extends State<AddItem> {
                                                     CrossAxisAlignment.center,
                                                 children: [
                                                   Text(
-                                                    "Added Successfully",
+                                                    "Added to Cart Successfully",
                                                     style: const TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 18,

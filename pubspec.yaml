@@ -50,6 +50,8 @@ dependencies:
     custom_info_window: ^1.0.1
     clippy_flutter: ^1.1.1
     cached_network_image: ^3.2.0
+    google_place: ^0.4.7
+    requests: ^4.3.0
 
 dev_dependencies:
     flutter_test:

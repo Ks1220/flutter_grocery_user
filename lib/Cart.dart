@@ -334,7 +334,7 @@ class _CartState extends State<Cart> {
                                                                                 CrossAxisAlignment.center,
                                                                             children: [
                                                                               Text(
-                                                                                "Remove Successfully",
+                                                                                "Remove from Cart Successfully",
                                                                                 style: const TextStyle(
                                                                                   color: Colors.white,
                                                                                   fontSize: 18,
@@ -409,7 +409,7 @@ class _CartState extends State<Cart> {
                                                                               CrossAxisAlignment.center,
                                                                           children: [
                                                                             Text(
-                                                                              "Added Successfully",
+                                                                              "Added to Cart Successfully",
                                                                               style: const TextStyle(
                                                                                 color: Colors.white,
                                                                                 fontSize: 18,
