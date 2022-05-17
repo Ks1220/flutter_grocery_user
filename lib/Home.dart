@@ -15,6 +15,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_place/google_place.dart';
 import 'package:requests/requests.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:geocoding/geocoding.dart' as geocoding;
 
 import 'StoreItem.dart';
 
@@ -43,10 +44,13 @@ class _HomeState extends State<Home> {
 
   Position? _currentPosition;
   String? _currentAddress;
+  double? latitude;
+  double? longitude;
 
-  final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
+  Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
   CustomInfoWindowController _customInfoWindowController =
       CustomInfoWindowController();
+  GoogleMapController? mapController;
 
   String? name;
 
@@ -106,6 +110,7 @@ class _HomeState extends State<Home> {
 
   void _onMapCreated(GoogleMapController controller) {
     setState(() {
+      mapController = controller;
       _customInfoWindowController.googleMapController = controller;
       mapData.forEach((items) {
         _markers.add(Marker(
@@ -251,6 +256,8 @@ class _HomeState extends State<Home> {
         .then((Position position) {
       setState(() {
         _currentPosition = position;
+        latitude = _currentPosition!.latitude;
+        longitude = _currentPosition!.longitude;
       });
       _getAddressFromLatLng();
     }).catchError((e) {
@@ -310,13 +317,14 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final CameraPosition _kGooglePlex = CameraPosition(
+    CameraPosition _kGooglePlex = CameraPosition(
       target: LatLng(
-        _currentPosition!.latitude,
-        _currentPosition!.longitude,
+        latitude!,
+        longitude!,
       ),
       zoom: 17,
     );
+    CameraUpdate update = CameraUpdate.newCameraPosition(_kGooglePlex);
 
     return Scaffold(
       appBar: AppBar(
@@ -372,15 +380,37 @@ class _HomeState extends State<Home> {
                   shrinkWrap: true,
                   itemCount: predictions.length,
                   itemBuilder: (context, index) {
-                    return ListTile(
-                      visualDensity: VisualDensity(vertical: -4), // to compact
-                      title: Text(predictions[index]["description"],
-                          overflow: TextOverflow.fade,
-                          softWrap: false,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                          )),
+                    return GestureDetector(
+                      onTap: () async {
+                        List<geocoding.Location> locations =
+                            await geocoding.locationFromAddress(
+                                predictions[index]["description"]);
+
+                        setState(() {
+                          latitude = locations[0].latitude;
+                          longitude = locations[0].longitude;
+
+                          LatLng newlatlong = LatLng(latitude!, longitude!);
+                          mapController
+                              ?.animateCamera(CameraUpdate.newCameraPosition(
+                                  CameraPosition(target: newlatlong, zoom: 16)))
+                              .then((value) => {
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus()
+                                  });
+                        });
+                      },
+                      child: ListTile(
+                        visualDensity:
+                            VisualDensity(vertical: -4), // to compact
+                        title: Text(predictions[index]["description"],
+                            overflow: TextOverflow.fade,
+                            softWrap: false,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            )),
+                      ),
                     );
                   },
                 ),
@@ -395,7 +425,7 @@ class _HomeState extends State<Home> {
               onCameraMove: (CameraPosition cameraPositiona) {
                 _customInfoWindowController.hideInfoWindow!();
               },
-              mapType: MapType.hybrid,
+              mapType: MapType.normal,
               initialCameraPosition: _kGooglePlex,
               onMapCreated: _onMapCreated,
               markers: _markers,
