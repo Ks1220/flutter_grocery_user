@@ -10,6 +10,8 @@ import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:collection/collection.dart';
 
+import 'Cart.dart';
+
 class AddItem extends StatefulWidget {
   final String _itemId;
   final String _storeId;
@@ -487,7 +489,10 @@ class _AddItemState extends State<AddItem> {
                       shape: RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(5.0),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) => Cart()));
+                      },
                       child: Wrap(
                         spacing:
                             100, // to apply margin in the main axis of the wrap

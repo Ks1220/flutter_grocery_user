@@ -464,7 +464,7 @@ class _CartState extends State<Cart> {
                     } else if (snapshot.hasError) {
                       return Text('no data');
                     } else {
-                      return CircularProgressIndicator();
+                      return Center(child: CircularProgressIndicator());
                     }
                   }),
             ),
