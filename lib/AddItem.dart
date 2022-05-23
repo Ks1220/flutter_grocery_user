@@ -313,7 +313,7 @@ class _AddItemState extends State<AddItem> {
                         child: Align(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            "/\t$dropdownvalue",
+                            "/ $dropdownvalue",
                             style: TextStyle(fontSize: 15),
                           ),
                         ),
@@ -488,12 +488,24 @@ class _AddItemState extends State<AddItem> {
                         borderRadius: new BorderRadius.circular(5.0),
                       ),
                       onPressed: () {},
-                      child: Text(
-                          'Cart \t\t\t.\t\t\t $cartNumber Item \t\t\t\t\t\t\t RM${totalAmount.toStringAsFixed(2)}',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600)),
+                      child: Wrap(
+                        spacing:
+                            100, // to apply margin in the main axis of the wrap
+                        runSpacing:
+                            100, // to apply margin in the cross axis of the wrap
+                        children: [
+                          Text('Cart . $cartNumber Item',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600)),
+                          Text('RM${totalAmount.toStringAsFixed(2)}',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600))
+                        ],
+                      ),
                     ),
                   ),
                 )),
