@@ -639,7 +639,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 } else if (snapshot.hasError) {
                   return Text('no data');
                 }
-                return Cetner(child: CircularProgressIndicator());
+                return Center(child: CircularProgressIndicator());
               },
             ),
             Expanded(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery_user/Cart.dart';
+import 'package:flutter_grocery_user/Favourite.dart';
 import 'package:flutter_grocery_user/Home.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,7 +13,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
-  List<Widget> tabs = [Home(), Cart(), Cart(), Cart()];
+  List<Widget> tabs = [Home(), Cart(), Favourite(), Cart()];
 
   _onItemTapped(int index) {
     setState(() {

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:collection/collection.dart';
+import 'package:geolocator/geolocator.dart';
 
 import 'Cart.dart';
 
@@ -40,12 +41,15 @@ class _AddItemState extends State<AddItem> {
   TextEditingController _itemStockController = TextEditingController();
   TextEditingController _itemPriceController = TextEditingController();
 
+  bool isFavourite = false;
+
   @override
   void initState() {
     super.initState();
     fetchItemId();
     fetchCartInfo();
     getStoreName();
+    getFavourite();
   }
 
   fetchCartInfo() {
@@ -96,6 +100,18 @@ class _AddItemState extends State<AddItem> {
         });
   }
 
+  getFavourite() async {
+    final favExist = await FirebaseFirestore.instance
+        .collection('Favourite')
+        .doc(user!.uid)
+        .collection('Item')
+        .doc(widget._itemId) // varuId in your case
+        .get();
+    if (favExist.exists) {
+      isFavourite = true;
+    }
+  }
+
   showError(BuildContext context, Object errormessage) {
     showFlash(
       context: context,
@@ -123,6 +139,7 @@ class _AddItemState extends State<AddItem> {
 
   @override
   Widget build(BuildContext context) {
+    print("THIS IS FAV: $isFavourite");
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 65.0,
@@ -133,144 +150,151 @@ class _AddItemState extends State<AddItem> {
             style: TextStyle(color: Colors.black)),
         elevation: 0,
         backgroundColor: Colors.white,
-        actions: <Widget>[
-          MaterialButton(
-            onPressed: () async {
-              final snapShot = await FirebaseFirestore.instance
-                  .collection('Favourite')
-                  .doc(user!.uid)
-                  .collection('Item')
-                  .doc(widget._itemId)
-                  .get();
-
-              if (snapShot == null || !snapShot.exists) {
-                await FirebaseFirestore.instance
-                    .collection('Favourite')
-                    .doc(user!.uid)
-                    .collection('Item')
-                    .doc(widget._itemId)
-                    .set({
-                  "itemName": _itemNameController.text,
-                  "itemImage": imageUrl,
-                  "itemDescription": _itemDescriptionController.text,
-                  "price": _itemPriceController.text,
-                  "measurementMatrix": dropdownvalue,
-                  "itemCount": 1,
-                  "storeName": storeName,
-                  "id": widget._itemId
-                }).then((value) => {
-                          showFlash(
-                            context: context,
-                            duration: const Duration(seconds: 2),
-                            builder: (context, controller) {
-                              return Flash.bar(
-                                controller: controller,
-                                backgroundColor: Colors.green,
-                                position: FlashPosition.top,
-                                child: Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 70,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          "Added to Favourite",
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                              );
-                            },
-                          ),
-                        });
-              } else {
-                await FirebaseFirestore.instance
-                    .collection('Favourite')
-                    .doc(user!.uid)
-                    .collection('Item')
-                    .doc(widget._itemId)
-                    .delete()
-                    .then((value) => {
-                          showFlash(
-                            context: context,
-                            duration: const Duration(seconds: 2),
-                            builder: (context, controller) {
-                              return Flash.bar(
-                                controller: controller,
-                                backgroundColor: Colors.red,
-                                position: FlashPosition.top,
-                                child: Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 70,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          "Removed from Favourite",
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                              );
-                            },
-                          ),
-                        });
-              }
-
-              Future.delayed(const Duration(seconds: 2), () {});
-            },
-            child: Row(children: <Widget>[
-              Icon(Icons.star, size: 25, color: Color(0xffFFCE31)),
-              Center(
-                  child: Padding(
-                padding: EdgeInsets.fromLTRB(5, 0, 3, 0),
-                child: Text("Add to Favourite",
-                    style: TextStyle(
-                        color: Color(0xffFFCE31),
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15),
-                    textAlign: TextAlign.center),
-              ))
-            ]),
-          )
-        ],
+        actions: <Widget>[],
       ),
       body: Container(
         child: Column(children: [
-          Center(
-            child: Column(
-              children: [
-                CachedNetworkImage(
-                  width: 140,
-                  height: 140,
-                  imageUrl: imageUrl,
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      SizedBox(
-                    width: 140,
-                    height: 140,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.black26,
-                      ),
-                    ),
-                  ),
-                  fit: BoxFit.fill,
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+          Stack(
+            children: [
+              Positioned(
+                top: 0,
+                right: 0,
+                child: MaterialButton(
+                  onPressed: () async {
+                    final snapShot = await FirebaseFirestore.instance
+                        .collection('Favourite')
+                        .doc(user!.uid)
+                        .collection('Item')
+                        .doc(widget._itemId)
+                        .get();
+
+                    if (snapShot == null || !snapShot.exists) {
+                      await FirebaseFirestore.instance
+                          .collection('Favourite')
+                          .doc(user!.uid)
+                          .collection('Item')
+                          .doc(widget._itemId)
+                          .set({
+                        "itemName": _itemNameController.text,
+                        "itemImage": imageUrl,
+                        "itemDescription": _itemDescriptionController.text,
+                        "price": _itemPriceController.text,
+                        "measurementMatrix": dropdownvalue,
+                        "storeName": storeName,
+                        "id": widget._itemId
+                      }).then((value) => {
+                                showFlash(
+                                  context: context,
+                                  duration: const Duration(seconds: 2),
+                                  builder: (context, controller) {
+                                    return Flash.bar(
+                                      controller: controller,
+                                      backgroundColor: Colors.green,
+                                      position: FlashPosition.top,
+                                      child: Container(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          height: 70,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                "Added to Favourite",
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                            ],
+                                          )),
+                                    );
+                                  },
+                                ),
+                                setState(
+                                  () {
+                                    isFavourite = true;
+                                  },
+                                )
+                              });
+                    } else {
+                      await FirebaseFirestore.instance
+                          .collection('Favourite')
+                          .doc(user!.uid)
+                          .collection('Item')
+                          .doc(widget._itemId)
+                          .delete()
+                          .then((value) => {
+                                showFlash(
+                                  context: context,
+                                  duration: const Duration(seconds: 2),
+                                  builder: (context, controller) {
+                                    return Flash.bar(
+                                      controller: controller,
+                                      backgroundColor: Colors.red,
+                                      position: FlashPosition.top,
+                                      child: Container(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          height: 70,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                "Removed from Favourite",
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                            ],
+                                          )),
+                                    );
+                                  },
+                                ),
+                                setState(() {
+                                  isFavourite = false;
+                                })
+                              });
+                    }
+
+                    Future.delayed(const Duration(seconds: 2), () {});
+                  },
+                  child: isFavourite
+                      ? Icon(Icons.star, size: 35, color: Color(0xffFFCE31))
+                      : Icon(Icons.star_border_outlined,
+                          size: 35, color: Color(0xffFFCE31)),
                 ),
-              ],
-            ),
+              ),
+              Center(
+                child: Column(
+                  children: [
+                    CachedNetworkImage(
+                      width: 140,
+                      height: 140,
+                      imageUrl: imageUrl,
+                      progressIndicatorBuilder:
+                          (context, url, downloadProgress) => SizedBox(
+                        width: 140,
+                        height: 140,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black26,
+                          ),
+                        ),
+                      ),
+                      fit: BoxFit.fill,
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
           Container(
             margin: EdgeInsets.fromLTRB(25, 25, 10, 0),
