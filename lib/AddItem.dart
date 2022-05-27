@@ -139,7 +139,6 @@ class _AddItemState extends State<AddItem> {
 
   @override
   Widget build(BuildContext context) {
-    print("THIS IS FAV: $isFavourite");
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 65.0,
@@ -181,7 +180,9 @@ class _AddItemState extends State<AddItem> {
                         "price": _itemPriceController.text,
                         "measurementMatrix": dropdownvalue,
                         "storeName": storeName,
-                        "id": widget._itemId
+                        "id": widget._itemId,
+                        "storeId": widget._storeId,
+                        "stockAmount": _itemStockController.text
                       }).then((value) => {
                                 showFlash(
                                   context: context,
@@ -379,7 +380,9 @@ class _AddItemState extends State<AddItem> {
                         "measurementMatrix": dropdownvalue,
                         "itemCount": 1,
                         "storeName": storeName,
-                        "id": widget._itemId
+                        "id": widget._itemId,
+                        "storeId": widget._storeId,
+                        "stockAmount": _itemStockController.text
                       }).then((value) => {
                                 showFlash(
                                   context: context,
