@@ -293,75 +293,69 @@ class _CartState extends State<Cart> {
                                             SizedBox(
                                               height: 25,
                                               width: 25,
-                                              child: Visibility(
-                                                  visible: snapshot.data!
-                                                                  .docs[index]
-                                                              ['itemCount'] !=
-                                                          1
-                                                      ? true
-                                                      : false,
-                                                  child: FloatingActionButton(
-                                                    onPressed: (() async {
-                                                      await FirebaseFirestore
-                                                          .instance
-                                                          .collection('Carts')
-                                                          .doc(user!.uid)
-                                                          .collection('Item')
-                                                          .doc(snapshot.data!
-                                                                  .docs[index]
-                                                              ['id'])
-                                                          .update({
-                                                        "itemCount": FieldValue
-                                                            .increment(-1)
-                                                      }).then((value) => {
-                                                                showFlash(
-                                                                  context:
-                                                                      context,
-                                                                  duration:
-                                                                      const Duration(
-                                                                          seconds:
-                                                                              2),
-                                                                  builder: (context,
-                                                                      controller) {
-                                                                    return Flash
-                                                                        .bar(
-                                                                      controller:
-                                                                          controller,
-                                                                      backgroundColor:
-                                                                          Colors
-                                                                              .red,
-                                                                      position:
-                                                                          FlashPosition
-                                                                              .top,
-                                                                      child: Container(
-                                                                          width: MediaQuery.of(context).size.width,
-                                                                          height: 70,
-                                                                          child: Column(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.center,
-                                                                            crossAxisAlignment:
-                                                                                CrossAxisAlignment.center,
-                                                                            children: [
-                                                                              Text(
-                                                                                "Remove from Cart Successfully",
-                                                                                style: const TextStyle(
-                                                                                  color: Colors.white,
-                                                                                  fontSize: 18,
+                                              child: FloatingActionButton(
+                                                onPressed: snapshot.data!
+                                                                .docs[index]
+                                                            ['itemCount'] !=
+                                                        1
+                                                    ? (() async {
+                                                        await FirebaseFirestore
+                                                            .instance
+                                                            .collection('Carts')
+                                                            .doc(user!.uid)
+                                                            .collection('Item')
+                                                            .doc(snapshot.data!
+                                                                    .docs[index]
+                                                                ['id'])
+                                                            .update({
+                                                          "itemCount":
+                                                              FieldValue
+                                                                  .increment(-1)
+                                                        }).then((value) => {
+                                                                  showFlash(
+                                                                    context:
+                                                                        context,
+                                                                    duration: const Duration(
+                                                                        seconds:
+                                                                            2),
+                                                                    builder:
+                                                                        (context,
+                                                                            controller) {
+                                                                      return Flash
+                                                                          .bar(
+                                                                        controller:
+                                                                            controller,
+                                                                        backgroundColor:
+                                                                            Colors.red,
+                                                                        position:
+                                                                            FlashPosition.top,
+                                                                        child: Container(
+                                                                            width: MediaQuery.of(context).size.width,
+                                                                            height: 70,
+                                                                            child: Column(
+                                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                                              children: [
+                                                                                Text(
+                                                                                  "Removed from Cart",
+                                                                                  style: const TextStyle(
+                                                                                    color: Colors.white,
+                                                                                    fontSize: 18,
+                                                                                  ),
                                                                                 ),
-                                                                              ),
-                                                                            ],
-                                                                          )),
-                                                                    );
-                                                                  },
-                                                                ),
-                                                              });
-                                                    }),
-                                                    child: Icon(Icons.remove,
-                                                        size: 15,
-                                                        color: Colors.black),
-                                                    backgroundColor:
-                                                        Colors.white,
-                                                  )),
+                                                                              ],
+                                                                            )),
+                                                                      );
+                                                                    },
+                                                                  ),
+                                                                });
+                                                      })
+                                                    : null,
+                                                child: Icon(Icons.remove,
+                                                    size: 15,
+                                                    color: Colors.black),
+                                                backgroundColor: Colors.white,
+                                              ),
                                             ),
                                             SizedBox(
                                               width: 10,
@@ -377,61 +371,70 @@ class _CartState extends State<Cart> {
                                                 height: 25,
                                                 width: 25,
                                                 child: FloatingActionButton(
-                                                  onPressed: (() async {
-                                                    await FirebaseFirestore
-                                                        .instance
-                                                        .collection('Carts')
-                                                        .doc(user!.uid)
-                                                        .collection('Item')
-                                                        .doc(snapshot.data!
-                                                            .docs[index]['id'])
-                                                        .update({
-                                                      "itemCount":
-                                                          FieldValue.increment(
-                                                              1)
-                                                    }).then((value) => {
-                                                              showFlash(
-                                                                context:
-                                                                    context,
-                                                                duration:
-                                                                    const Duration(
-                                                                        seconds:
-                                                                            2),
-                                                                builder: (context,
-                                                                    controller) {
-                                                                  return Flash
-                                                                      .bar(
-                                                                    controller:
-                                                                        controller,
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .green,
-                                                                    position:
-                                                                        FlashPosition
-                                                                            .top,
-                                                                    child: Container(
-                                                                        width: MediaQuery.of(context).size.width,
-                                                                        height: 70,
-                                                                        child: Column(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.center,
-                                                                          crossAxisAlignment:
-                                                                              CrossAxisAlignment.center,
-                                                                          children: [
-                                                                            Text(
-                                                                              "Added to Cart Successfully",
-                                                                              style: const TextStyle(
-                                                                                color: Colors.white,
-                                                                                fontSize: 18,
-                                                                              ),
-                                                                            ),
-                                                                          ],
-                                                                        )),
-                                                                  );
-                                                                },
-                                                              ),
-                                                            });
-                                                  }),
+                                                  onPressed: snapshot.data!
+                                                                  .docs[index]
+                                                              ['itemCount'] <
+                                                          int.parse(snapshot
+                                                                  .data!
+                                                                  .docs[index]
+                                                              ["stockAmount"])
+                                                      ? (() async {
+                                                          await FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'Carts')
+                                                              .doc(user!.uid)
+                                                              .collection(
+                                                                  'Item')
+                                                              .doc(snapshot
+                                                                      .data!
+                                                                      .docs[
+                                                                  index]['id'])
+                                                              .update({
+                                                            "itemCount":
+                                                                FieldValue
+                                                                    .increment(
+                                                                        1)
+                                                          }).then((value) => {
+                                                                    showFlash(
+                                                                      context:
+                                                                          context,
+                                                                      duration: const Duration(
+                                                                          seconds:
+                                                                              2),
+                                                                      builder:
+                                                                          (context,
+                                                                              controller) {
+                                                                        return Flash
+                                                                            .bar(
+                                                                          controller:
+                                                                              controller,
+                                                                          backgroundColor:
+                                                                              Colors.green,
+                                                                          position:
+                                                                              FlashPosition.top,
+                                                                          child: Container(
+                                                                              width: MediaQuery.of(context).size.width,
+                                                                              height: 70,
+                                                                              child: Column(
+                                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                children: [
+                                                                                  Text(
+                                                                                    "Added to Cart Successfully",
+                                                                                    style: const TextStyle(
+                                                                                      color: Colors.white,
+                                                                                      fontSize: 18,
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              )),
+                                                                        );
+                                                                      },
+                                                                    ),
+                                                                  });
+                                                        })
+                                                      : null,
                                                   child: new Icon(
                                                     Icons.add,
                                                     size: 15,
