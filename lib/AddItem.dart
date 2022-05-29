@@ -410,8 +410,12 @@ class _AddItemState extends State<AddItem> {
                                             Column(
                                               children: [
                                                 Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.4,
                                                   margin: EdgeInsets.fromLTRB(
-                                                      25, 0, 0, 0),
+                                                      20, 0, 0, 0),
                                                   child: Align(
                                                     alignment:
                                                         Alignment.topLeft,
@@ -425,8 +429,12 @@ class _AddItemState extends State<AddItem> {
                                                   ),
                                                 ),
                                                 Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.4,
                                                   margin: EdgeInsets.fromLTRB(
-                                                      10, 10, 0, 0),
+                                                      20, 10, 0, 0),
                                                   child: Align(
                                                     alignment:
                                                         Alignment.topLeft,

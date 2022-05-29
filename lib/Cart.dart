@@ -181,10 +181,8 @@ class _CartState extends State<Cart> {
                       builder: (context, AsyncSnapshot snapshot) {
                         if (snapshot.hasData) {
                           return ListView.separated(
-                            separatorBuilder: (_, __) => Container(
-                                width: 1.0,
-                                height: 2.0,
-                                color: Colors.grey[300]),
+                            separatorBuilder: (_, __) =>
+                                Container(height: 2.0, color: Colors.grey[300]),
                             itemCount: snapshot.data!.docs.length,
                             itemBuilder: (ctx, index) {
                               return Slidable(

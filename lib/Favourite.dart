@@ -28,6 +28,8 @@ class _FavouriteState extends State<Favourite> {
   List groceryItemList = [];
   List items = [];
 
+  int itemCount = 1;
+
   @override
   void initState() {
     super.initState();
@@ -179,7 +181,9 @@ class _FavouriteState extends State<Favourite> {
                   stream: DatabaseManager().getFavouriteList(user!.uid),
                   builder: (context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
-                      return ListView.builder(
+                      return ListView.separated(
+                        separatorBuilder: (_, __) =>
+                            Container(height: 2.0, color: Colors.grey[300]),
                         itemCount: snapshot.data!.docs.length,
                         itemBuilder: (ctx, index) {
                           return GestureDetector(
@@ -308,146 +312,435 @@ class _FavouriteState extends State<Favourite> {
                                         ),
                                         minimumSize: Size(100, 40),
                                       ),
-                                      onPressed: () async {
-                                        final snapShot = await FirebaseFirestore
-                                            .instance
-                                            .collection('Carts')
-                                            .doc(user!.uid)
-                                            .collection('Item')
-                                            .doc(snapshot.data!.docs[index]
-                                                ["id"])
-                                            .get();
-
-                                        if (snapShot == null ||
-                                            !snapShot.exists) {
-                                          await FirebaseFirestore.instance
-                                              .collection('Carts')
-                                              .doc(user!.uid)
-                                              .collection('Item')
-                                              .doc(snapshot.data!.docs[index]
-                                                  ["id"])
-                                              .set({
-                                            "itemName": snapshot
-                                                .data!.docs[index]["itemName"],
-                                            "itemImage": snapshot
-                                                .data!.docs[index]["itemImage"],
-                                            "itemDescription": snapshot.data!
-                                                .docs[index]["itemDescription"],
-                                            "price": snapshot.data!.docs[index]
-                                                ["price"],
-                                            "measurementMatrix":
-                                                snapshot.data!.docs[index]
-                                                    ["measurementMatrix"],
-                                            "itemCount": 1,
-                                            "storeId": snapshot
-                                                .data!.docs[index]["storeId"],
-                                            "storeName": snapshot
-                                                .data!.docs[index]["storeName"],
-                                            "id": snapshot.data!.docs[index]
-                                                ["id"]
-                                          }).then((value) => {
-                                                    showFlash(
-                                                      context: context,
-                                                      duration: const Duration(
-                                                          seconds: 2),
-                                                      builder: (context,
-                                                          controller) {
-                                                        return Flash.bar(
-                                                          controller:
-                                                              controller,
-                                                          backgroundColor:
-                                                              Colors.green,
-                                                          position:
-                                                              FlashPosition.top,
-                                                          child: Container(
-                                                              width:
-                                                                  MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width,
-                                                              height: 70,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  Text(
-                                                                    "Added to Cart Successfully",
-                                                                    style:
-                                                                        const TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize:
-                                                                          18,
+                                      onPressed: () {
+                                        showModalBottomSheet(
+                                            context: context,
+                                            isScrollControlled: true,
+                                            builder: (BuildContext context) {
+                                              return StatefulBuilder(
+                                                builder: (BuildContext context,
+                                                    StateSetter setState) {
+                                                  return SingleChildScrollView(
+                                                      child: Container(
+                                                    padding: EdgeInsets.only(
+                                                      bottom:
+                                                          MediaQuery.of(context)
+                                                              .viewInsets
+                                                              .bottom,
+                                                      left: 20,
+                                                      right: 20,
+                                                      top: 10,
+                                                    ),
+                                                    child: Column(
+                                                      children: <Widget>[
+                                                        SizedBox(height: 10),
+                                                        Row(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                CachedNetworkImage(
+                                                                  width: 100,
+                                                                  height: 100,
+                                                                  imageUrl: snapshot
+                                                                          .data!
+                                                                          .docs[index]
+                                                                      [
+                                                                      "itemImage"],
+                                                                  progressIndicatorBuilder:
+                                                                      (context,
+                                                                              url,
+                                                                              downloadProgress) =>
+                                                                          SizedBox(
+                                                                    width: 140,
+                                                                    height: 140,
+                                                                    child:
+                                                                        Container(
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        color: Colors
+                                                                            .black26,
+                                                                      ),
                                                                     ),
                                                                   ),
-                                                                ],
-                                                              )),
-                                                        );
-                                                      },
-                                                    ),
-                                                  });
-                                        } else {
-                                          await FirebaseFirestore.instance
-                                              .collection('Carts')
-                                              .doc(user!.uid)
-                                              .collection('Item')
-                                              .doc(snapshot.data!.docs[index]
-                                                  ["id"])
-                                              .update({
-                                            "itemCount": FieldValue.increment(1)
-                                          }).then((value) => {
-                                                    showFlash(
-                                                      context: context,
-                                                      duration: const Duration(
-                                                          seconds: 2),
-                                                      builder: (context,
-                                                          controller) {
-                                                        return Flash.bar(
-                                                          controller:
-                                                              controller,
-                                                          backgroundColor:
-                                                              Colors.green,
-                                                          position:
-                                                              FlashPosition.top,
-                                                          child: Container(
-                                                              width:
-                                                                  MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width,
-                                                              height: 70,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  Text(
-                                                                    "Added to Cart Successfully",
-                                                                    style:
-                                                                        const TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize:
-                                                                          18,
+                                                                  fit: BoxFit
+                                                                      .fill,
+                                                                  errorWidget: (context,
+                                                                          url,
+                                                                          error) =>
+                                                                      Icon(Icons
+                                                                          .error),
+                                                                ),
+                                                                Column(
+                                                                  children: [
+                                                                    Container(
+                                                                      margin: EdgeInsets
+                                                                          .fromLTRB(
+                                                                              20,
+                                                                              0,
+                                                                              0,
+                                                                              0),
+                                                                      width: MediaQuery.of(context)
+                                                                              .size
+                                                                              .width *
+                                                                          0.4,
+                                                                      child:
+                                                                          Align(
+                                                                        alignment:
+                                                                            Alignment.topLeft,
+                                                                        child:
+                                                                            Text(
+                                                                          "RM${snapshot.data!.docs[index]["price"]}",
+                                                                          style: TextStyle(
+                                                                              fontSize: 20,
+                                                                              fontWeight: FontWeight.w600),
+                                                                        ),
+                                                                      ),
                                                                     ),
-                                                                  ),
-                                                                ],
+                                                                    Container(
+                                                                      width: MediaQuery.of(context)
+                                                                              .size
+                                                                              .width *
+                                                                          0.4,
+                                                                      margin: EdgeInsets
+                                                                          .fromLTRB(
+                                                                              20,
+                                                                              10,
+                                                                              0,
+                                                                              0),
+                                                                      child:
+                                                                          Align(
+                                                                        alignment:
+                                                                            Alignment.topLeft,
+                                                                        child:
+                                                                            Text(
+                                                                          "Stock: ${snapshot.data!.docs[index]["stockAmount"]}",
+                                                                          style:
+                                                                              TextStyle(fontSize: 15),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            Spacer(),
+                                                            Align(
+                                                              alignment:
+                                                                  Alignment
+                                                                      .topRight,
+                                                              child: IconButton(
+                                                                icon: const Icon(
+                                                                    Icons
+                                                                        .close),
+                                                                tooltip:
+                                                                    'Close',
+                                                                iconSize: 30,
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                        SizedBox(height: 30),
+                                                        Wrap(children: <Widget>[
+                                                          Container(
+                                                            width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.65,
+                                                            child: Text(
+                                                              "Quantity",
+                                                              style: TextStyle(
+                                                                  fontSize: 20,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 25,
+                                                            width: 25,
+                                                            child:
+                                                                FloatingActionButton(
+                                                              onPressed:
+                                                                  itemCount != 1
+                                                                      ? (() {
+                                                                          setState(
+                                                                              () {
+                                                                            itemCount -=
+                                                                                1;
+                                                                          });
+                                                                        })
+                                                                      : null,
+                                                              child: Icon(
+                                                                  Icons.remove,
+                                                                  size: 15,
+                                                                  color: Colors
+                                                                      .black),
+                                                              backgroundColor:
+                                                                  Colors.white,
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          SizedBox(
+                                                            width: 30,
+                                                            child: Center(
+                                                              child: Text(
+                                                                  '$itemCount',
+                                                                  style: new TextStyle(
+                                                                      fontSize:
+                                                                          20.0)),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          SizedBox(
+                                                              height: 25,
+                                                              width: 25,
+                                                              child:
+                                                                  FloatingActionButton(
+                                                                onPressed: itemCount <
+                                                                        int.parse(snapshot
+                                                                            .data!
+                                                                            .docs[index]["stockAmount"])
+                                                                    ? (() {
+                                                                        setState(
+                                                                            () {
+                                                                          itemCount +=
+                                                                              1;
+                                                                        });
+                                                                      })
+                                                                    : null,
+                                                                child: new Icon(
+                                                                  Icons.add,
+                                                                  size: 15,
+                                                                  color: Colors
+                                                                      .black,
+                                                                ),
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .white,
                                                               )),
-                                                        );
-                                                      },
-                                                    ),
-                                                  });
-                                        }
+                                                        ]),
+                                                        SizedBox(height: 30),
+                                                        ButtonTheme(
+                                                          buttonColor:
+                                                              Color(0xff2C6846),
+                                                          minWidth: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              0.92,
+                                                          height: 55.0,
+                                                          child: RaisedButton(
+                                                            padding: EdgeInsets
+                                                                .fromLTRB(70,
+                                                                    10, 70, 10),
+                                                            shape:
+                                                                RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  new BorderRadius
+                                                                          .circular(
+                                                                      5.0),
+                                                            ),
+                                                            onPressed:
+                                                                () async {
+                                                              final snapShot = await FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'Carts')
+                                                                  .doc(
+                                                                      user!.uid)
+                                                                  .collection(
+                                                                      'Item')
+                                                                  .doc(snapshot
+                                                                          .data!
+                                                                          .docs[
+                                                                      index]["id"])
+                                                                  .get();
 
-                                        Future.delayed(
-                                            const Duration(seconds: 2), () {});
+                                                              if (snapShot ==
+                                                                      null ||
+                                                                  !snapShot
+                                                                      .exists) {
+                                                                await FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'Carts')
+                                                                    .doc(user!
+                                                                        .uid)
+                                                                    .collection(
+                                                                        'Item')
+                                                                    .doc(snapshot
+                                                                            .data!
+                                                                            .docs[index]
+                                                                        ["id"])
+                                                                    .set({
+                                                                  "itemName": snapshot
+                                                                          .data!
+                                                                          .docs[index]
+                                                                      [
+                                                                      "itemName"],
+                                                                  "itemImage": snapshot
+                                                                          .data!
+                                                                          .docs[index]
+                                                                      [
+                                                                      "itemImage"],
+                                                                  "itemDescription": snapshot
+                                                                          .data!
+                                                                          .docs[index]
+                                                                      [
+                                                                      "itemDescription"],
+                                                                  "price": snapshot
+                                                                          .data!
+                                                                          .docs[index]
+                                                                      ["price"],
+                                                                  "measurementMatrix": snapshot
+                                                                          .data!
+                                                                          .docs[index]
+                                                                      [
+                                                                      "measurementMatrix"],
+                                                                  "itemCount":
+                                                                      1,
+                                                                  "storeId": snapshot
+                                                                          .data!
+                                                                          .docs[index]
+                                                                      [
+                                                                      "storeId"],
+                                                                  "storeName": snapshot
+                                                                          .data!
+                                                                          .docs[index]
+                                                                      [
+                                                                      "storeName"],
+                                                                  "id": snapshot
+                                                                          .data!
+                                                                          .docs[
+                                                                      index]["id"],
+                                                                  "stockAmount": snapshot
+                                                                          .data!
+                                                                          .docs[index]
+                                                                      [
+                                                                      "stockAmount"],
+                                                                }).then(
+                                                                        (value) =>
+                                                                            {
+                                                                              showFlash(
+                                                                                context: context,
+                                                                                duration: const Duration(seconds: 2),
+                                                                                builder: (context, controller) {
+                                                                                  return Flash.bar(
+                                                                                    controller: controller,
+                                                                                    backgroundColor: Colors.green,
+                                                                                    position: FlashPosition.top,
+                                                                                    child: Container(
+                                                                                        width: MediaQuery.of(context).size.width,
+                                                                                        height: 70,
+                                                                                        child: Column(
+                                                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                          children: [
+                                                                                            Text(
+                                                                                              "Added to Cart Successfully",
+                                                                                              style: const TextStyle(
+                                                                                                color: Colors.white,
+                                                                                                fontSize: 18,
+                                                                                              ),
+                                                                                            ),
+                                                                                          ],
+                                                                                        )),
+                                                                                  );
+                                                                                },
+                                                                              ),
+                                                                              Navigator.pop(context)
+                                                                            });
+                                                              } else {
+                                                                await FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'Carts')
+                                                                    .doc(user!
+                                                                        .uid)
+                                                                    .collection(
+                                                                        'Item')
+                                                                    .doc(snapshot
+                                                                            .data!
+                                                                            .docs[index]
+                                                                        ["id"])
+                                                                    .update({
+                                                                  "itemCount":
+                                                                      FieldValue
+                                                                          .increment(
+                                                                              itemCount)
+                                                                }).then(
+                                                                        (value) =>
+                                                                            {
+                                                                              showFlash(
+                                                                                context: context,
+                                                                                duration: const Duration(seconds: 2),
+                                                                                builder: (context, controller) {
+                                                                                  return Flash.bar(
+                                                                                    controller: controller,
+                                                                                    backgroundColor: Colors.green,
+                                                                                    position: FlashPosition.top,
+                                                                                    child: Container(
+                                                                                        width: MediaQuery.of(context).size.width,
+                                                                                        height: 70,
+                                                                                        child: Column(
+                                                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                          children: [
+                                                                                            Text(
+                                                                                              "Added to Cart Successfully",
+                                                                                              style: const TextStyle(
+                                                                                                color: Colors.white,
+                                                                                                fontSize: 18,
+                                                                                              ),
+                                                                                            ),
+                                                                                          ],
+                                                                                        )),
+                                                                                  );
+                                                                                },
+                                                                              ),
+                                                                              Navigator.pop(context)
+                                                                            });
+                                                              }
+
+                                                              Future.delayed(
+                                                                  const Duration(
+                                                                      seconds:
+                                                                          2),
+                                                                  () {});
+                                                            },
+                                                            child: Text(
+                                                                'Add to Cart',
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        18,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600)),
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 30,
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ));
+                                                },
+                                              );
+                                            });
                                       },
                                       child: Text('Add to Cart'),
                                     )),
