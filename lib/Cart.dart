@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:clippy_flutter/arc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/src/iterable_extensions.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import 'AddItem.dart';
 import 'databaseManager/DatabaseManager.dart';
@@ -178,19 +180,62 @@ class _CartState extends State<Cart> {
                       stream: DatabaseManager().getCartList(user!.uid),
                       builder: (context, AsyncSnapshot snapshot) {
                         if (snapshot.hasData) {
-                          return ListView.builder(
+                          return ListView.separated(
+                            separatorBuilder: (_, __) => Container(
+                                width: 1.0,
+                                height: 2.0,
+                                color: Colors.grey[300]),
                             itemCount: snapshot.data!.docs.length,
                             itemBuilder: (ctx, index) {
-                              return Container(
-                                  padding: const EdgeInsets.fromLTRB(
-                                      0.0, 15.0, 15.0, 0.0),
-                                  height: 120,
+                              return Slidable(
+                                key: UniqueKey(),
+                                startActionPane: ActionPane(
+                                  motion: const StretchMotion(),
+                                  children: [
+                                    SlidableAction(
+                                      onPressed: (ctx) {
+                                        showDeleteItemsDialog(
+                                            snapshot.data!.docs[index]['id']);
+                                      },
+                                      backgroundColor: Color(0xFFFE4A49),
+                                      foregroundColor: Colors.white,
+                                      icon: Icons.delete,
+                                      label: 'Delete',
+                                    ),
+                                    SlidableAction(
+                                      onPressed: (ctx) {},
+                                      backgroundColor: Color(0xFF21B7CA),
+                                      foregroundColor: Colors.white,
+                                      icon: Icons.share,
+                                      label: 'Share',
+                                    ),
+                                  ],
+                                ),
+                                endActionPane: ActionPane(
+                                  motion: const StretchMotion(),
+                                  children: [
+                                    SlidableAction(
+                                      onPressed: (ctx) {
+                                        showDeleteItemsDialog(
+                                            snapshot.data!.docs[index]['id']);
+                                      },
+                                      backgroundColor: Color(0xFFFE4A49),
+                                      foregroundColor: Colors.white,
+                                      icon: Icons.delete,
+                                      label: 'Delete',
+                                    ),
+                                    SlidableAction(
+                                      onPressed: (ctx) {},
+                                      backgroundColor: Color(0xFF21B7CA),
+                                      foregroundColor: Colors.white,
+                                      icon: Icons.share,
+                                      label: 'Share',
+                                    ),
+                                  ],
+                                ),
+                                child: Container(
+                                  margin: EdgeInsets.fromLTRB(0, 15, 0, 15),
                                   child: ListTile(
-                                      shape: Border(
-                                          bottom: BorderSide(
-                                              color: Color.fromARGB(
-                                                  255, 199, 199, 199),
-                                              width: 1)),
                                       title: GestureDetector(
                                         onTap: () {
                                           Navigator.of(context).push(
@@ -445,35 +490,37 @@ class _CartState extends State<Cart> {
                                             SizedBox(
                                               width: 20,
                                             ),
-                                            SizedBox.fromSize(
-                                              size: Size(30, 30),
-                                              child: Material(
-                                                color: Color(0xff2C6846),
-                                                child: InkWell(
-                                                  splashColor: Colors.green,
-                                                  onTap: () {
-                                                    showDeleteItemsDialog(
-                                                        snapshot.data!
-                                                            .docs[index]['id']);
-                                                  }, // button pressed
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: <Widget>[
-                                                      Icon(
-                                                        Icons.clear,
-                                                        size: 18,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            )
+                                            // SizedBox.fromSize(
+                                            //   size: Size(30, 30),
+                                            //   child: Material(
+                                            //     color: Color(0xff2C6846),
+                                            //     child: InkWell(
+                                            //       splashColor: Colors.green,
+                                            //       onTap: () {
+                                            //         showDeleteItemsDialog(
+                                            //             snapshot.data!
+                                            //                 .docs[index]['id']);
+                                            //       }, // button pressed
+                                            //       child: Column(
+                                            //         mainAxisAlignment:
+                                            //             MainAxisAlignment
+                                            //                 .center,
+                                            //         children: <Widget>[
+                                            //           Icon(
+                                            //             Icons.clear,
+                                            //             size: 18,
+                                            //             color: Colors.white,
+                                            //           ),
+                                            //         ],
+                                            //       ),
+                                            //     ),
+                                            //   ),
+                                            // )
                                           ],
                                         ),
-                                      )));
+                                      )),
+                                ),
+                              );
                             },
                           );
                         } else if (snapshot.hasError) {
