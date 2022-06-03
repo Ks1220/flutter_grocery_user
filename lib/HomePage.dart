@@ -13,23 +13,32 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
+  late PageController _pageController;
+
   List<Widget> tabs = [Home(), Cart(), Favourite(), Cart()];
 
   _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      _pageController.jumpToPage(index);
     });
   }
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(initialPage: _selectedIndex);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: tabs[_selectedIndex],
+      // body: tabs[_selectedIndex],
+      body: PageView(
+        controller: _pageController,
+        physics: NeverScrollableScrollPhysics(),
+        children: tabs,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,

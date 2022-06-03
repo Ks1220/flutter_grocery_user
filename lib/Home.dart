@@ -26,8 +26,10 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   late User user;
+  @override
+  bool get wantKeepAlive => true;
   User? currentUser = FirebaseAuth.instance.currentUser;
   TextEditingController searchController = TextEditingController();
 
@@ -317,6 +319,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     CameraPosition _kGooglePlex = CameraPosition(
       target: LatLng(
         latitude!,

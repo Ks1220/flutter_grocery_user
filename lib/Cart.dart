@@ -22,7 +22,9 @@ class Cart extends StatefulWidget {
   _CartState createState() => _CartState();
 }
 
-class _CartState extends State<Cart> {
+class _CartState extends State<Cart> with AutomaticKeepAliveClientMixin<Cart> {
+  @override
+  bool get wantKeepAlive => true;
   User? user = FirebaseAuth.instance.currentUser;
   List storeId = [];
 
@@ -132,6 +134,7 @@ class _CartState extends State<Cart> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 65.0,

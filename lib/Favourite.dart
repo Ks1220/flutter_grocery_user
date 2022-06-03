@@ -21,7 +21,10 @@ class Favourite extends StatefulWidget {
   _FavouriteState createState() => _FavouriteState();
 }
 
-class _FavouriteState extends State<Favourite> {
+class _FavouriteState extends State<Favourite>
+    with AutomaticKeepAliveClientMixin<Favourite> {
+  @override
+  bool get wantKeepAlive => true;
   User? user = FirebaseAuth.instance.currentUser;
   List storeId = [];
 
@@ -134,6 +137,7 @@ class _FavouriteState extends State<Favourite> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 65.0,

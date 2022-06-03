@@ -513,13 +513,9 @@ class _AddItemState extends State<AddItem> {
                                     SizedBox(
                                       width: 10,
                                     ),
-                                    SizedBox(
-                                      width: 30,
-                                      child: Center(
-                                        child: Text('$itemCount',
-                                            style:
-                                                new TextStyle(fontSize: 20.0)),
-                                      ),
+                                    Center(
+                                      child: Text('$itemCount',
+                                          style: new TextStyle(fontSize: 20.0)),
                                     ),
                                     SizedBox(
                                       width: 10,
