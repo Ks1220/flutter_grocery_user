@@ -13,6 +13,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import 'AddItem.dart';
+import 'Checkout.dart';
 import 'databaseManager/DatabaseManager.dart';
 
 class Cart extends StatefulWidget {
@@ -22,9 +23,7 @@ class Cart extends StatefulWidget {
   _CartState createState() => _CartState();
 }
 
-class _CartState extends State<Cart> with AutomaticKeepAliveClientMixin<Cart> {
-  @override
-  bool get wantKeepAlive => true;
+class _CartState extends State<Cart> {
   User? user = FirebaseAuth.instance.currentUser;
   List storeId = [];
 
@@ -134,7 +133,6 @@ class _CartState extends State<Cart> with AutomaticKeepAliveClientMixin<Cart> {
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 65.0,
@@ -491,32 +489,6 @@ class _CartState extends State<Cart> with AutomaticKeepAliveClientMixin<Cart> {
                                             SizedBox(
                                               width: 20,
                                             ),
-                                            // SizedBox.fromSize(
-                                            //   size: Size(30, 30),
-                                            //   child: Material(
-                                            //     color: Color(0xff2C6846),
-                                            //     child: InkWell(
-                                            //       splashColor: Colors.green,
-                                            //       onTap: () {
-                                            //         showDeleteItemsDialog(
-                                            //             snapshot.data!
-                                            //                 .docs[index]['id']);
-                                            //       }, // button pressed
-                                            //       child: Column(
-                                            //         mainAxisAlignment:
-                                            //             MainAxisAlignment
-                                            //                 .center,
-                                            //         children: <Widget>[
-                                            //           Icon(
-                                            //             Icons.clear,
-                                            //             size: 18,
-                                            //             color: Colors.white,
-                                            //           ),
-                                            //         ],
-                                            //       ),
-                                            //     ),
-                                            //   ),
-                                            // )
                                           ],
                                         ),
                                       )),
@@ -586,7 +558,9 @@ class _CartState extends State<Cart> with AutomaticKeepAliveClientMixin<Cart> {
                                         new BorderRadius.circular(5.0),
                                   ),
                                   onPressed: () {
-                                    // showLogOutDialog();
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) => Checkout()));
                                   },
                                   child: Text('Buy Now',
                                       style: TextStyle(

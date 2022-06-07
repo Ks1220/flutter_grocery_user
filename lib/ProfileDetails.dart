@@ -13,10 +13,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 class StoreDetails extends StatefulWidget {
   final TextEditingController _nameController,
+      _phoneController,
       _emailController,
       _passwordController;
-  StoreDetails(
-      this._nameController, this._emailController, this._passwordController,
+  StoreDetails(this._nameController, this._phoneController,
+      this._emailController, this._passwordController,
       {Key? key})
       : super(key: key);
   _StoreDetailsState createState() => _StoreDetailsState();
@@ -99,7 +100,6 @@ class _StoreDetailsState extends State<StoreDetails> {
               child: Column(
         children: <Widget>[
           SizedBox(height: 10.0),
-
           Container(
             child: RichText(
               textAlign: TextAlign.left,
@@ -113,7 +113,6 @@ class _StoreDetailsState extends State<StoreDetails> {
             ),
             width: mediaQueryData.size.width * 0.85,
           ),
-
           Container(
             child: RichText(
               textAlign: TextAlign.left,
@@ -317,7 +316,6 @@ class _StoreDetailsState extends State<StoreDetails> {
                 ])),
           ),
           SizedBox(height: 20),
-
           ButtonTheme(
             buttonColor: Color(0xff2C6846),
             minWidth: mediaQueryData.size.width * 0.85,
@@ -348,17 +346,18 @@ class _StoreDetailsState extends State<StoreDetails> {
                       .set({
                     "uid": _firebaseAuth.currentUser!.uid.toString(),
                     "email": user.user!.email,
+                    "phone": widget._phoneController.text,
                     "name": widget._nameController.text,
                     "shippingAddress": _addressOneController.text +
-                        "," +
+                        " " +
                         _addressTwoController.text +
-                        "," +
+                        " " +
                         _postalCodeController.text +
-                        "," +
+                        " " +
                         _cityController.text +
-                        "," +
+                        " " +
                         _stateController.text +
-                        "," +
+                        " " +
                         _countryController.text,
                     "isMerchant": false
                   });
@@ -376,7 +375,6 @@ class _StoreDetailsState extends State<StoreDetails> {
             ),
           ),
           SizedBox(height: 10.0),
-
           Container(
             child: RichText(
               textAlign: TextAlign.center,
@@ -388,14 +386,6 @@ class _StoreDetailsState extends State<StoreDetails> {
             ),
             width: 300,
           ),
-          // SignInButton(
-          //       Buttons.Google,
-          //       onPressed: () {
-          //         // final provider =
-          //         //     Provider.of<GoogleSignInProvider>(context, listen: false);
-          //         // provider.login();
-          //       },
-          //     )
         ],
       ))),
     );

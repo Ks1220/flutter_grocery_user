@@ -17,6 +17,7 @@ class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
 
   TextEditingController _nameController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
@@ -142,6 +143,34 @@ class _SignUpState extends State<SignUp> {
                           labelText: "Full Name",
                           prefixIcon:
                               Icon(Icons.person, color: Color(0xff2C6846))),
+                    ),
+                    SizedBox(height: 25),
+                    TextFormField(
+                      controller: _phoneController,
+                      validator: (input) {
+                        if (input!.isEmpty) return 'Pleas enter a phone number';
+                      },
+                      decoration: InputDecoration(
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red),
+                          ),
+                          errorStyle: TextStyle(height: 0.4),
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 20.0),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Color(0xff2C6846))),
+                          focusColor: Color(0xff2C6846),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                            color: Color(0xff2C6846),
+                          )),
+                          labelStyle: TextStyle(color: Color(0xff2C6846)),
+                          labelText: "Phone Number",
+                          prefixIcon:
+                              Icon(Icons.phone, color: Color(0xff2C6846))),
                     ),
                     SizedBox(height: 25),
                     TextFormField(
@@ -273,8 +302,11 @@ class _SignUpState extends State<SignUp> {
                 ),
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => StoreDetails(_nameController,
-                          _emailController, _passwordController)));
+                      builder: (context) => StoreDetails(
+                          _nameController,
+                          _phoneController,
+                          _emailController,
+                          _passwordController)));
                 },
                 child: Text('Next',
                     style: TextStyle(

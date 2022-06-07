@@ -320,8 +320,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    int controllerTextLength = searchController.text.length;
-    print("THIS IS CONTROLLER TEXT LENGHT: $controllerTextLength");
+
     CameraPosition _kGooglePlex = CameraPosition(
       target: LatLng(
         latitude!,
@@ -378,7 +377,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
             onChanged: (value) => {findPlace(value)},
           ),
         ),
-        controllerTextLength > 2
+        searchController.text.length > 2
             ? Container(
                 child: ListView.builder(
                   physics: NeverScrollableScrollPhysics(),

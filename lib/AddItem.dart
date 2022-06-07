@@ -483,7 +483,7 @@ class _AddItemState extends State<AddItem> {
                                     ],
                                   ),
                                   SizedBox(height: 30),
-                                  Wrap(children: <Widget>[
+                                  Row(children: <Widget>[
                                     Container(
                                       width: MediaQuery.of(context).size.width *
                                           0.65,
@@ -494,52 +494,55 @@ class _AddItemState extends State<AddItem> {
                                             fontWeight: FontWeight.w600),
                                       ),
                                     ),
-                                    SizedBox(
-                                      height: 25,
-                                      width: 25,
-                                      child: FloatingActionButton(
-                                        onPressed: itemCount != 1
-                                            ? (() {
-                                                setState(() {
-                                                  itemCount -= 1;
-                                                });
-                                              })
-                                            : null,
-                                        child: Icon(Icons.remove,
-                                            size: 15, color: Colors.black),
-                                        backgroundColor: Colors.white,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Center(
-                                      child: Text('$itemCount',
-                                          style: new TextStyle(fontSize: 20.0)),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    SizedBox(
-                                        height: 25,
-                                        width: 25,
-                                        child: FloatingActionButton(
-                                          onPressed: itemCount <
-                                                  int.parse(
-                                                      _itemStockController.text)
-                                              ? (() {
-                                                  setState(() {
-                                                    itemCount += 1;
-                                                  });
-                                                })
-                                              : null,
-                                          child: new Icon(
-                                            Icons.add,
-                                            size: 15,
-                                            color: Colors.black,
+                                    Row(
+                                      children: [
+                                        SizedBox(
+                                          height: 25,
+                                          width: 25,
+                                          child: FloatingActionButton(
+                                            onPressed: itemCount != 1
+                                                ? (() {
+                                                    setState(() {
+                                                      itemCount -= 1;
+                                                    });
+                                                  })
+                                                : null,
+                                            child: Icon(Icons.remove,
+                                                size: 15, color: Colors.black),
+                                            backgroundColor: Colors.white,
                                           ),
-                                          backgroundColor: Colors.white,
-                                        )),
+                                        ),
+                                        SizedBox(
+                                          width: 40,
+                                          child: Center(
+                                            child: Text('$itemCount',
+                                                style: new TextStyle(
+                                                    fontSize: 20.0)),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                            height: 25,
+                                            width: 25,
+                                            child: FloatingActionButton(
+                                              onPressed: itemCount <
+                                                      int.parse(
+                                                          _itemStockController
+                                                              .text)
+                                                  ? (() {
+                                                      setState(() {
+                                                        itemCount += 1;
+                                                      });
+                                                    })
+                                                  : null,
+                                              child: new Icon(
+                                                Icons.add,
+                                                size: 15,
+                                                color: Colors.black,
+                                              ),
+                                              backgroundColor: Colors.white,
+                                            )),
+                                      ],
+                                    )
                                   ]),
                                   SizedBox(height: 30),
                                   ButtonTheme(
@@ -629,32 +632,7 @@ class _AddItemState extends State<AddItem> {
                                                         );
                                                       },
                                                     ),
-                                                    setState(() {
-                                                      allItemsPrice = [];
-                                                      Query itemId =
-                                                          FirebaseFirestore
-                                                              .instance
-                                                              .collection(
-                                                                  'Carts')
-                                                              .doc(user!.uid)
-                                                              .collection(
-                                                                  'Item');
-                                                      itemId.get().then((docs) {
-                                                        setState(() {
-                                                          cartNumber =
-                                                              docs.size;
-
-                                                          docs.docs
-                                                              .forEach(
-                                                                  (doc) => {
-                                                                        allItemsPrice.add(double.parse(doc["price"]) *
-                                                                            doc["itemCount"]),
-                                                                        totalAmount =
-                                                                            allItemsPrice.sum,
-                                                                      });
-                                                        });
-                                                      });
-                                                    }),
+                                                    setCartDetails(),
                                                     Navigator.pop(context)
                                                   });
                                         } else {
