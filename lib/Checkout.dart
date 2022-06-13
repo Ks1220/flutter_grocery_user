@@ -19,11 +19,7 @@ class Checkout extends StatefulWidget {
   _CheckoutState createState() => _CheckoutState();
 }
 
-class _CheckoutState extends State<Checkout>
-    with AutomaticKeepAliveClientMixin<Checkout> {
-  @override
-  bool get wantKeepAlive => true;
-
+class _CheckoutState extends State<Checkout> {
   User? currentUser = FirebaseAuth.instance.currentUser;
   @override
   void initState() {
@@ -97,10 +93,112 @@ class _CheckoutState extends State<Checkout>
     return qn.data();
   }
 
+  copy() async {
+    QuerySnapshot snaphsot = await FirebaseFirestore.instance
+        .collection('Carts')
+        .doc(currentUser!.uid)
+        .collection('Item')
+        .get();
+
+    for (var message in snaphsot.docs) {
+      FirebaseFirestore.instance
+          .collection('UserOrders')
+          .doc(currentUser!.uid)
+          .collection('Item')
+          .doc(message.data()["id"])
+          .set({
+        "itemName": message.data()["itemName"],
+        "itemImage": message.data()["itemImage"],
+        "itemDescription": message.data()["itemDescription"],
+        "price": message.data()["price"],
+        "measurementMatrix": message.data()["measurementMatrix"],
+        "itemCount": message.data()["itemCount"],
+        "storeId": message.data()["storeId"],
+        "storeName": message.data()["storeName"],
+        "id": message.data()["id"],
+        "stockAmount": message.data()["stockAmount"],
+      }).then((value) => {
+                showFlash(
+                  context: context,
+                  duration: const Duration(seconds: 2),
+                  builder: (context, controller) {
+                    return Flash.bar(
+                      controller: controller,
+                      backgroundColor: Colors.green,
+                      position: FlashPosition.top,
+                      child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 70,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Added to Cart Successfully",
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          )),
+                    );
+                  },
+                ),
+              });
+      FirebaseFirestore.instance
+          .collection('MerchantOrders')
+          .doc(message.data()["storeId"])
+          .collection('User')
+          .doc(currentUser!.uid)
+          .collection('Item')
+          .doc(message.data()["id"])
+          .set({
+        "userId": currentUser!.uid,
+        "itemName": message.data()["itemName"],
+        "itemImage": message.data()["itemImage"],
+        "itemDescription": message.data()["itemDescription"],
+        "price": message.data()["price"],
+        "measurementMatrix": message.data()["measurementMatrix"],
+        "itemCount": message.data()["itemCount"],
+        "storeId": message.data()["storeId"],
+        "storeName": message.data()["storeName"],
+        "id": message.data()["id"],
+        "stockAmount": message.data()["stockAmount"],
+      }).then((value) => {
+                showFlash(
+                  context: context,
+                  duration: const Duration(seconds: 2),
+                  builder: (context, controller) {
+                    return Flash.bar(
+                      controller: controller,
+                      backgroundColor: Colors.green,
+                      position: FlashPosition.top,
+                      child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 70,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Added to Cart Successfully",
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          )),
+                    );
+                  },
+                ),
+              });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    print("TOTAL AMOUNT OF ITEM: ${totalAmount}");
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -596,8 +694,7 @@ class _CheckoutState extends State<Checkout>
                         child: RaisedButton(
                           padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => Checkout()));
+                            copy();
                           },
                           child: Text('Place Order',
                               style: TextStyle(
@@ -605,7 +702,7 @@ class _CheckoutState extends State<Checkout>
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600)),
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ),
