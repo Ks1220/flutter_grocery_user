@@ -119,7 +119,7 @@ class _UserFeedbackState extends State<UserFeedback> {
                 ),
                 onPressed: () async {
                   await FirebaseFirestore.instance
-                      .collection('User Rating')
+                      .collection('UserRating')
                       .doc(currentUser?.uid)
                       .set({
                     "rating": rating,
