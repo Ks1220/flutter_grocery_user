@@ -7,20 +7,20 @@ import 'package:collection/collection.dart';
 import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_grocery_user/ThankYou.dart';
 
 import 'AddItem.dart';
 import 'Start.dart';
+import 'ThankYou.dart';
 import 'databaseManager/DatabaseManager.dart';
 
-class Checkout extends StatefulWidget {
-  const Checkout({Key? key}) : super(key: key);
+class CheckoutSelfPickUp extends StatefulWidget {
+  const CheckoutSelfPickUp({Key? key}) : super(key: key);
 
   @override
-  _CheckoutState createState() => _CheckoutState();
+  _CheckoutSelfPickUpState createState() => _CheckoutSelfPickUpState();
 }
 
-class _CheckoutState extends State<Checkout> {
+class _CheckoutSelfPickUpState extends State<CheckoutSelfPickUp> {
   User? currentUser = FirebaseAuth.instance.currentUser;
   @override
   void initState() {
@@ -46,10 +46,28 @@ class _CheckoutState extends State<Checkout> {
   int cartNumber = 0;
   double totalAmount = 0.00;
   List<double> allItemsPrice = [];
+  List<String> allAddress = [];
 
   var length;
 
   fetchCartInfo() {
+    Query itemId = FirebaseFirestore.instance
+        .collection('Carts')
+        .doc(currentUser!.uid)
+        .collection('Item');
+    itemId.get().then((docs) {
+      setState(() {
+        cartNumber = docs.size;
+
+        docs.docs.forEach((doc) => {
+              allItemsPrice.add(double.parse(doc["price"]) * doc["itemCount"]),
+              totalAmount = allItemsPrice.sum
+            });
+      });
+    });
+  }
+
+  fetchAddress() {
     Query itemId = FirebaseFirestore.instance
         .collection('Carts')
         .doc(currentUser!.uid)
@@ -109,7 +127,7 @@ class _CheckoutState extends State<Checkout> {
           .doc(message.data()["id"])
           .set({
         "itemName": message.data()["itemName"],
-        "type": "Delivery",
+        "type": "SelfPickUp",
         "itemImage": message.data()["itemImage"],
         "itemDescription": message.data()["itemDescription"],
         "price": message.data()["price"],
@@ -119,7 +137,6 @@ class _CheckoutState extends State<Checkout> {
         "storeName": message.data()["storeName"],
         "id": message.data()["id"],
         "stockAmount": message.data()["stockAmount"],
-        "shippingAddress": _shippingAddressController.text
       }).then((value) => {
                 FirebaseFirestore.instance
                     .collection('MerchantOrders')
@@ -130,7 +147,7 @@ class _CheckoutState extends State<Checkout> {
                     .doc(message.data()["id"])
                     .set({
                   "userId": currentUser!.uid,
-                  "type": "Delivery",
+                  "type": "SelfPickUp",
                   "itemName": message.data()["itemName"],
                   "itemImage": message.data()["itemImage"],
                   "itemDescription": message.data()["itemDescription"],
@@ -141,7 +158,6 @@ class _CheckoutState extends State<Checkout> {
                   "storeName": message.data()["storeName"],
                   "id": message.data()["id"],
                   "stockAmount": message.data()["stockAmount"],
-                  "shippingAddress": _shippingAddressController.text
                 })
               });
     }
@@ -171,14 +187,13 @@ class _CheckoutState extends State<Checkout> {
               )),
         );
       },
-    ).then((value) => {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => ThankYou()))
-        });
+    ).then((value) => Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => ThankYou())));
   }
 
   @override
   Widget build(BuildContext context) {
+    print("ALL ADDRESS: $allAddress");
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -207,254 +222,6 @@ class _CheckoutState extends State<Checkout> {
                     return Center(child: CircularProgressIndicator());
                   } else if (snapshot.connectionState == ConnectionState.done) {
                     return Column(children: [
-                      ListTile(
-                        onTap: () {
-                          showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              builder: (BuildContext context) {
-                                return SingleChildScrollView(
-                                    child: Container(
-                                  padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context)
-                                        .viewInsets
-                                        .bottom,
-                                    left: 20,
-                                    right: 20,
-                                    top: 10,
-                                  ),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Row(
-                                        children: [
-                                          Text(
-                                            'Shipping Address',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Spacer(),
-                                          IconButton(
-                                            icon: const Icon(Icons.close),
-                                            tooltip: 'Close',
-                                            iconSize: 30,
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 10),
-                                      Form(
-                                        key: _formKey,
-                                        child: TextFormField(
-                                          controller:
-                                              _shippingAddressController,
-                                          validator: (input) {
-                                            if (input!.isEmpty)
-                                              return 'Please enter Shipping Address';
-                                          },
-                                          maxLines: 4,
-                                          decoration: InputDecoration(
-                                              focusedErrorBorder:
-                                                  OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.red),
-                                              ),
-                                              errorBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.red),
-                                              ),
-                                              errorStyle:
-                                                  TextStyle(height: 0.4),
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 20.0),
-                                              enabledBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Colors.grey)),
-                                              focusColor: Colors.grey,
-                                              focusedBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                color: Colors.grey,
-                                              )),
-                                              labelText:
-                                                  "Enter Shipping Address",
-                                              labelStyle:
-                                                  TextStyle(color: Colors.grey),
-                                              prefixIcon: Icon(
-                                                  Icons.location_on_outlined,
-                                                  color: Colors.grey)),
-                                        ),
-                                      ),
-                                      SizedBox(height: 15),
-                                      ButtonTheme(
-                                        buttonColor: Color(0xff2C6846),
-                                        minWidth:
-                                            MediaQuery.of(context).size.width *
-                                                0.92,
-                                        height: 55.0,
-                                        child: RaisedButton(
-                                          padding: EdgeInsets.fromLTRB(
-                                              70, 10, 70, 10),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                new BorderRadius.circular(5.0),
-                                          ),
-                                          onPressed: () async {
-                                            if (_formKey.currentState!
-                                                .validate()) {
-                                              await FirebaseFirestore.instance
-                                                  .collection('UserData')
-                                                  .doc(currentUser?.uid)
-                                                  .update({
-                                                "shippingAddress":
-                                                    _shippingAddressController
-                                                        .text,
-                                              }).then((value) => showFlash(
-                                                        context: context,
-                                                        duration:
-                                                            const Duration(
-                                                                seconds: 2),
-                                                        builder: (context,
-                                                            controller) {
-                                                          return Flash.bar(
-                                                            controller:
-                                                                controller,
-                                                            backgroundColor:
-                                                                Colors.green,
-                                                            position:
-                                                                FlashPosition
-                                                                    .top,
-                                                            child: Container(
-                                                                width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                                height: 70,
-                                                                child: Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    Text(
-                                                                      "Shipping Address Updated Successfully",
-                                                                      style:
-                                                                          const TextStyle(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            18,
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                )),
-                                                          );
-                                                        },
-                                                      ));
-                                              Future.delayed(
-                                                  const Duration(seconds: 2),
-                                                  () {});
-                                              Navigator.of(context).pop();
-                                            }
-                                          },
-                                          child: Text('Save',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w600)),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 30,
-                                      )
-                                    ],
-                                  ),
-                                ));
-                              });
-                        },
-                        leading: Icon(Icons.location_on_outlined,
-                            size: 32, color: Color(0xff2C6846)),
-                        title: Wrap(
-                          children: <Widget>[
-                            Row(
-                              children: [
-                                Text(
-                                  "Delivery Address",
-                                  style: const TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 30.0,
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  (snapshot.data
-                                      as Map<String, dynamic>)['name'],
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                Text(
-                                  " | ",
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                Text(
-                                  (snapshot.data
-                                      as Map<String, dynamic>)['phone'],
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 20.0,
-                            ),
-                            Row(
-                              children: [
-                                SizedBox(
-                                  width: 270.0,
-                                  child: Text(
-                                    (snapshot.data as Map<String, dynamic>)[
-                                        'shippingAddress'],
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 40.0,
-                            ),
-                          ],
-                        ),
-                        trailing: Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: <Widget>[
-                            Icon(
-                              Icons.chevron_right,
-                              size: 26,
-                              color: Colors.black,
-                            )
-                          ],
-                        ),
-                      ),
                       Row(
                         children: [
                           Container(
@@ -592,6 +359,14 @@ class _CheckoutState extends State<Checkout> {
                               return Center(child: CircularProgressIndicator());
                             }
                           }),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(20, 0, 20, 10),
+                        child: Text(
+                            "** Please be aware that you have selected self-pick up, address is provided in the shop page.",
+                            style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w500)),
+                      ),
                       Row(
                         children: [
                           Container(

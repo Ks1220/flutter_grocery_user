@@ -639,9 +639,6 @@ class _ProfilePageState extends State<ProfilePage>
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: 40,
-                      ),
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
@@ -649,9 +646,6 @@ class _ProfilePageState extends State<ProfilePage>
                         },
                         child: ListTile(
                           shape: Border(
-                              top: BorderSide(
-                                  color: Color.fromARGB(255, 199, 199, 199),
-                                  width: 1),
                               bottom: BorderSide(
                                   color: Color.fromARGB(255, 199, 199, 199),
                                   width: 1)),

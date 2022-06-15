@@ -359,6 +359,28 @@ class _StoreDetailsState extends State<StoreDetails> {
                         _countryController.text,
                     "isMerchant": false
                   });
+                  showFlash(
+                      context: context,
+                      duration: const Duration(seconds: 3),
+                      builder: (context, controller) {
+                        return Flash.bar(
+                          controller: controller,
+                          backgroundColor: Colors.green,
+                          position: FlashPosition.top,
+                          child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 70,
+                              child: Center(
+                                child: Text(
+                                  "Registered",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              )),
+                        );
+                      });
                   Navigator.push(
                       context,
                       MaterialPageRoute(

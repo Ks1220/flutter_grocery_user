@@ -26,6 +26,34 @@ class _StoreItemState extends State<StoreItem> {
 
   List groceryItemList = [];
   List nameList = [];
+  List AZList = [
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z'
+  ];
   List itemsIdList = [];
   List items = [];
 
@@ -252,140 +280,54 @@ class _StoreItemState extends State<StoreItem> {
                 ),
               )
             : Expanded(
-                child: searchController.text.length > 0
-                    ? ListView.builder(
-                        itemCount: items.length,
-                        itemBuilder: (ctx, index) {
-                          return GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => AddItem(
-                                        itemsIdList[index], widget._storeId)));
-                              },
-                              child: Container(
-                                  padding: const EdgeInsets.fromLTRB(
-                                      0.0, 15.0, 30, 0.0),
-                                  height: 90,
-                                  child: ListTile(
-                                    shape: Border(
-                                        bottom: BorderSide(
-                                            color: Color.fromARGB(
-                                                255, 199, 199, 199),
-                                            width: 1)),
-                                    title: Text(items.length > 0
-                                        ? "${items[index]["itemName"]}"
-                                        : ""),
-                                    subtitle: Text(items.length > 0
-                                        ? "RM ${items[index]["price"]}/${items[index]["measurementMatrix"]}"
-                                        : ""),
-                                    leading: (CachedNetworkImage(
-                                      width: 65,
-                                      height: 65,
-                                      imageUrl: items[index]["itemImage"],
-                                      progressIndicatorBuilder:
-                                          (context, url, downloadProgress) =>
-                                              SizedBox(
-                                        width: 65,
-                                        height: 65,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.black26,
-                                          ),
-                                        ),
-                                      ),
-                                      fit: BoxFit.fill,
-                                      errorWidget: (context, url, error) =>
-                                          Icon(Icons.error),
-                                    )),
-                                    trailing: Text(items.length > 0
-                                        ? "Stock: ${items[index]["stockAmount"]}"
-                                        : ""),
-                                  )));
-                        },
-                      )
-                    : AlphabetScrollView(
-                        list: nameList.map((e) => AlphaModel(e)).toList(),
-                        alignment: LetterAlignment.right,
-                        itemExtent: 150,
-                        unselectedTextStyle: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.normal,
-                            color: Colors.black),
-                        selectedTextStyle: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xff2C6846)),
-                        overlayWidget: (value) => Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Icon(
-                              Icons.star,
-                              size: 50,
-                              color: Colors.red,
-                            ),
-                            Container(
-                              height: 50,
-                              width: 50,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
+                child: ListView.builder(
+                itemCount: items.length,
+                itemBuilder: (ctx, index) {
+                  return GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                AddItem(itemsIdList[index], widget._storeId)));
+                      },
+                      child: Container(
+                          padding:
+                              const EdgeInsets.fromLTRB(0.0, 15.0, 30, 0.0),
+                          height: 90,
+                          child: ListTile(
+                            shape: Border(
+                                bottom: BorderSide(
+                                    color: Color.fromARGB(255, 199, 199, 199),
+                                    width: 1)),
+                            title: Text(items.length > 0
+                                ? "${items[index]["itemName"]}"
+                                : ""),
+                            subtitle: Text(items.length > 0
+                                ? "RM ${items[index]["price"]}/${items[index]["measurementMatrix"]}"
+                                : ""),
+                            leading: (CachedNetworkImage(
+                              width: 65,
+                              height: 65,
+                              imageUrl: items[index]["itemImage"],
+                              progressIndicatorBuilder:
+                                  (context, url, downloadProgress) => SizedBox(
+                                width: 65,
+                                height: 65,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.black26,
+                                  ),
+                                ),
                               ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                '$value'.toUpperCase(),
-                                style: TextStyle(
-                                    fontSize: 18, color: Colors.white),
-                              ),
-                            ),
-                          ],
-                        ),
-                        itemBuilder: (_, index, buildContext) {
-                          return (GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => AddItem(
-                                        itemsIdList[index], widget._storeId)));
-                              },
-                              child: Container(
-                                  padding: const EdgeInsets.fromLTRB(
-                                      0.0, 15.0, 30, 0.0),
-                                  height: 90,
-                                  child: ListTile(
-                                    shape: Border(
-                                        bottom: BorderSide(
-                                            color: Color.fromARGB(
-                                                255, 199, 199, 199),
-                                            width: 1)),
-                                    title: Text(items.length > 0
-                                        ? "${items[index]["itemName"]}"
-                                        : ""),
-                                    subtitle: Text(items.length > 0
-                                        ? "RM ${items[index]["price"]}/${items[index]["measurementMatrix"]}"
-                                        : ""),
-                                    leading: (CachedNetworkImage(
-                                      width: 65,
-                                      height: 65,
-                                      imageUrl: items[index]["itemImage"],
-                                      progressIndicatorBuilder:
-                                          (context, url, downloadProgress) =>
-                                              SizedBox(
-                                        width: 65,
-                                        height: 65,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.black26,
-                                          ),
-                                        ),
-                                      ),
-                                      fit: BoxFit.fill,
-                                      errorWidget: (context, url, error) =>
-                                          Icon(Icons.error),
-                                    )),
-                                    trailing: Text(items.length > 0
-                                        ? "Stock: ${items[index]["stockAmount"]}"
-                                        : ""),
-                                  ))));
-                        },
-                      )),
+                              fit: BoxFit.fill,
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                            )),
+                            trailing: Text(items.length > 0
+                                ? "Stock: ${items[index]["stockAmount"]}"
+                                : ""),
+                          )));
+                },
+              ))
       ]),
     );
   }

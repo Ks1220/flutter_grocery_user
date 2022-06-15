@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter_grocery_user/CheckoutSelfPickUp.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import 'AddItem.dart';
@@ -97,7 +98,9 @@ class _CartState extends State<Cart> {
                               );
                             },
                           )
-                        });
+                        })
+                    .then((value) => Navigator.of(context)
+                        .popUntil((route) => route.isFirst));
               },
             ),
           ],
@@ -201,13 +204,6 @@ class _CartState extends State<Cart> {
                                       icon: Icons.delete,
                                       label: 'Delete',
                                     ),
-                                    SlidableAction(
-                                      onPressed: (ctx) {},
-                                      backgroundColor: Color(0xFF21B7CA),
-                                      foregroundColor: Colors.white,
-                                      icon: Icons.share,
-                                      label: 'Share',
-                                    ),
                                   ],
                                 ),
                                 endActionPane: ActionPane(
@@ -222,13 +218,6 @@ class _CartState extends State<Cart> {
                                       foregroundColor: Colors.white,
                                       icon: Icons.delete,
                                       label: 'Delete',
-                                    ),
-                                    SlidableAction(
-                                      onPressed: (ctx) {},
-                                      backgroundColor: Color(0xFF21B7CA),
-                                      foregroundColor: Colors.white,
-                                      icon: Icons.share,
-                                      label: 'Share',
                                     ),
                                   ],
                                 ),
@@ -531,7 +520,10 @@ class _CartState extends State<Cart> {
                                         new BorderRadius.circular(5.0),
                                   ),
                                   onPressed: () {
-                                    // showLogOutDialog();
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                CheckoutSelfPickUp()));
                                   },
                                   child: Text('Self Pick-Up',
                                       style: TextStyle(

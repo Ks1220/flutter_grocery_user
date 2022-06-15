@@ -85,7 +85,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   void findPlace(String placeName) async {
     if (placeName.length > 1) {
       String autocompleteUrl =
-          "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${placeName}&key=$apiKey";
+          "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${placeName}&components=country:my&radius=10000&key=$apiKey";
 
       var res = await Requests.get(autocompleteUrl);
 

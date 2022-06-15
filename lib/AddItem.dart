@@ -732,6 +732,8 @@ class _AddItemState extends State<AddItem> {
                           borderRadius: new BorderRadius.circular(5.0),
                         ),
                         onPressed: () {
+                          // Navigator.of(context)
+                          //     .popUntil(ModalRoute.withName("/Cart"));
                           Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) => Cart()));
                         },
@@ -739,7 +741,7 @@ class _AddItemState extends State<AddItem> {
                           spacing: 100,
                           runSpacing: 100,
                           children: [
-                            Text('Cart . $cartNumber Item',
+                            Text('Cart - $cartNumber Item',
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 18,

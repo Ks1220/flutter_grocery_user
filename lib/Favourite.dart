@@ -209,13 +209,6 @@ class _FavouriteState extends State<Favourite> {
                                       icon: Icons.delete,
                                       label: 'Delete',
                                     ),
-                                    SlidableAction(
-                                      onPressed: (ctx) {},
-                                      backgroundColor: Color(0xFF21B7CA),
-                                      foregroundColor: Colors.white,
-                                      icon: Icons.share,
-                                      label: 'Share',
-                                    ),
                                   ],
                                 ),
                                 endActionPane: ActionPane(
@@ -230,13 +223,6 @@ class _FavouriteState extends State<Favourite> {
                                       foregroundColor: Colors.white,
                                       icon: Icons.delete,
                                       label: 'Delete',
-                                    ),
-                                    SlidableAction(
-                                      onPressed: (ctx) {},
-                                      backgroundColor: Color(0xFF21B7CA),
-                                      foregroundColor: Colors.white,
-                                      icon: Icons.share,
-                                      label: 'Share',
                                     ),
                                   ],
                                 ),
@@ -567,6 +553,8 @@ class _FavouriteState extends State<Favourite> {
                                                                           .docs[
                                                                       index]["id"])
                                                                   .get();
+                                                              print(
+                                                                  "ITEM COUNT: $itemCount");
 
                                                               if (snapShot ==
                                                                       null ||
@@ -585,52 +573,37 @@ class _FavouriteState extends State<Favourite> {
                                                                             .docs[index]
                                                                         ["id"])
                                                                     .set({
-                                                                  "itemName": snapshot
+                                                                      "itemName": snapshot
                                                                           .data!
-                                                                          .docs[index]
-                                                                      [
-                                                                      "itemName"],
-                                                                  "itemImage": snapshot
+                                                                          .docs[index]["itemName"],
+                                                                      "itemImage": snapshot
                                                                           .data!
-                                                                          .docs[index]
-                                                                      [
-                                                                      "itemImage"],
-                                                                  "itemDescription": snapshot
+                                                                          .docs[index]["itemImage"],
+                                                                      "itemDescription": snapshot
                                                                           .data!
-                                                                          .docs[index]
-                                                                      [
-                                                                      "itemDescription"],
-                                                                  "price": snapshot
+                                                                          .docs[index]["itemDescription"],
+                                                                      "price": snapshot
                                                                           .data!
-                                                                          .docs[index]
-                                                                      ["price"],
-                                                                  "measurementMatrix": snapshot
+                                                                          .docs[index]["price"],
+                                                                      "measurementMatrix": snapshot
                                                                           .data!
-                                                                          .docs[index]
-                                                                      [
-                                                                      "measurementMatrix"],
-                                                                  "itemCount":
-                                                                      1,
-                                                                  "storeId": snapshot
+                                                                          .docs[index]["measurementMatrix"],
+                                                                      "itemCount":
+                                                                          itemCount,
+                                                                      "storeId": snapshot
                                                                           .data!
-                                                                          .docs[index]
-                                                                      [
-                                                                      "storeId"],
-                                                                  "storeName": snapshot
+                                                                          .docs[index]["storeId"],
+                                                                      "storeName": snapshot
                                                                           .data!
-                                                                          .docs[index]
-                                                                      [
-                                                                      "storeName"],
-                                                                  "id": snapshot
+                                                                          .docs[index]["storeName"],
+                                                                      "id": snapshot
                                                                           .data!
-                                                                          .docs[
-                                                                      index]["id"],
-                                                                  "stockAmount": snapshot
+                                                                          .docs[index]["id"],
+                                                                      "stockAmount": snapshot
                                                                           .data!
-                                                                          .docs[index]
-                                                                      [
-                                                                      "stockAmount"],
-                                                                }).then(
+                                                                          .docs[index]["stockAmount"],
+                                                                    })
+                                                                    .then(
                                                                         (value) =>
                                                                             {
                                                                               showFlash(
@@ -661,7 +634,13 @@ class _FavouriteState extends State<Favourite> {
                                                                                 },
                                                                               ),
                                                                               Navigator.pop(context)
-                                                                            });
+                                                                            })
+                                                                    .then((value) =>
+                                                                        setState(
+                                                                            () {
+                                                                          itemCount =
+                                                                              1;
+                                                                        }));
                                                               } else {
                                                                 await FirebaseFirestore
                                                                     .instance
