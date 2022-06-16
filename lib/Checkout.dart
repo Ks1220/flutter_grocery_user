@@ -27,6 +27,7 @@ class _CheckoutState extends State<Checkout> {
     super.initState();
     getData();
     setCartDetails();
+    getName();
   }
 
   @override
@@ -48,6 +49,8 @@ class _CheckoutState extends State<Checkout> {
   List<double> allItemsPrice = [];
 
   var length;
+
+  var userName;
 
   fetchCartInfo() {
     Query itemId = FirebaseFirestore.instance
@@ -90,8 +93,18 @@ class _CheckoutState extends State<Checkout> {
     var firestore = FirebaseFirestore.instance;
     DocumentSnapshot qn =
         await firestore.collection('UserData').doc(currentUser?.uid).get();
-
     return qn.data();
+  }
+
+  getName() {
+    DocumentReference user =
+        FirebaseFirestore.instance.collection('UserData').doc(currentUser?.uid);
+
+    user.get().then((docs) {
+      setState(() {
+        userName = docs.data()!["name"];
+      });
+    });
   }
 
   copy() async {
@@ -119,14 +132,13 @@ class _CheckoutState extends State<Checkout> {
         "storeName": message.data()["storeName"],
         "id": message.data()["id"],
         "stockAmount": message.data()["stockAmount"],
-        "shippingAddress": _shippingAddressController.text
+        "shippingAddress": _shippingAddressController.text,
+        "userName": userName
       }).then((value) => {
                 FirebaseFirestore.instance
                     .collection('MerchantOrders')
                     .doc(message.data()["storeId"])
-                    .collection('User')
-                    .doc(currentUser!.uid)
-                    .collection('Item')
+                    .collection('Items')
                     .doc(message.data()["id"])
                     .set({
                   "userId": currentUser!.uid,
@@ -141,7 +153,8 @@ class _CheckoutState extends State<Checkout> {
                   "storeName": message.data()["storeName"],
                   "id": message.data()["id"],
                   "stockAmount": message.data()["stockAmount"],
-                  "shippingAddress": _shippingAddressController.text
+                  "shippingAddress": _shippingAddressController.text,
+                  "userName": userName
                 })
               });
     }

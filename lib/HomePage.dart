@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_grocery_user/Cart.dart';
 import 'package:flutter_grocery_user/Favourite.dart';
 import 'package:flutter_grocery_user/Home.dart';
+import 'package:flutter_grocery_user/MyOrders.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -15,7 +16,7 @@ class _HomePageState extends State<HomePage> {
 
   late PageController _pageController;
 
-  List<Widget> tabs = [Home(), Cart(), Favourite(), Cart()];
+  List<Widget> tabs = [Home(), Cart(), Favourite(), MyOrders()];
 
   _onItemTapped(int index) {
     setState(() {
