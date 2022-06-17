@@ -10,7 +10,11 @@ import 'databaseManager/DatabaseManager.dart';
 
 class StoreItem extends StatefulWidget {
   final String _storeId;
-  const StoreItem(this._storeId, {Key? key}) : super(key: key);
+  final _pageController;
+  final _selectedIndex;
+  const StoreItem(this._selectedIndex, this._pageController, this._storeId,
+      {Key? key})
+      : super(key: key);
 
   @override
   _StoreItemState createState() => _StoreItemState();
@@ -26,34 +30,7 @@ class _StoreItemState extends State<StoreItem> {
 
   List groceryItemList = [];
   List nameList = [];
-  List AZList = [
-    'A',
-    'B',
-    'C',
-    'D',
-    'E',
-    'F',
-    'G',
-    'H',
-    'I',
-    'J',
-    'K',
-    'L',
-    'M',
-    'N',
-    'O',
-    'P',
-    'Q',
-    'R',
-    'S',
-    'T',
-    'U',
-    'V',
-    'W',
-    'X',
-    'Y',
-    'Z'
-  ];
+
   List itemsIdList = [];
   List items = [];
 
@@ -286,8 +263,11 @@ class _StoreItemState extends State<StoreItem> {
                   return GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) =>
-                                AddItem(itemsIdList[index], widget._storeId)));
+                            builder: (context) => AddItem(
+                                widget._selectedIndex,
+                                widget._pageController,
+                                itemsIdList[index],
+                                widget._storeId)));
                       },
                       child: Container(
                           padding:
