@@ -446,7 +446,7 @@ class _FavouriteState extends State<Favourite> {
                                                           ],
                                                         ),
                                                         SizedBox(height: 30),
-                                                        Wrap(children: <Widget>[
+                                                        Row(children: <Widget>[
                                                           Container(
                                                             width: MediaQuery.of(
                                                                         context)
@@ -462,73 +462,69 @@ class _FavouriteState extends State<Favourite> {
                                                                           .w600),
                                                             ),
                                                           ),
-                                                          SizedBox(
-                                                            height: 25,
-                                                            width: 25,
-                                                            child:
-                                                                FloatingActionButton(
-                                                              onPressed:
-                                                                  itemCount != 1
-                                                                      ? (() {
-                                                                          setState(
-                                                                              () {
-                                                                            itemCount -=
-                                                                                1;
-                                                                          });
-                                                                        })
-                                                                      : null,
-                                                              child: Icon(
-                                                                  Icons.remove,
-                                                                  size: 15,
-                                                                  color: Colors
-                                                                      .black),
-                                                              backgroundColor:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                          SizedBox(
-                                                            width: 30,
-                                                            child: Center(
-                                                              child: Text(
-                                                                  '$itemCount',
-                                                                  style: new TextStyle(
-                                                                      fontSize:
-                                                                          20.0)),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                          SizedBox(
-                                                              height: 25,
-                                                              width: 25,
-                                                              child:
-                                                                  FloatingActionButton(
-                                                                onPressed: itemCount <
-                                                                        int.parse(snapshot
-                                                                            .data!
-                                                                            .docs[index]["stockAmount"])
-                                                                    ? (() {
-                                                                        setState(
-                                                                            () {
-                                                                          itemCount +=
-                                                                              1;
-                                                                        });
-                                                                      })
-                                                                    : null,
-                                                                child: new Icon(
-                                                                  Icons.add,
-                                                                  size: 15,
-                                                                  color: Colors
-                                                                      .black,
+                                                          Row(
+                                                            children: [
+                                                              SizedBox(
+                                                                height: 25,
+                                                                width: 25,
+                                                                child:
+                                                                    FloatingActionButton(
+                                                                  onPressed:
+                                                                      itemCount !=
+                                                                              1
+                                                                          ? (() {
+                                                                              setState(() {
+                                                                                itemCount -= 1;
+                                                                              });
+                                                                            })
+                                                                          : null,
+                                                                  child: Icon(
+                                                                      Icons
+                                                                          .remove,
+                                                                      size: 15,
+                                                                      color: Colors
+                                                                          .black),
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .white,
                                                                 ),
-                                                                backgroundColor:
-                                                                    Colors
-                                                                        .white,
-                                                              )),
+                                                              ),
+                                                              SizedBox(
+                                                                width: 40,
+                                                                child: Center(
+                                                                  child: Text(
+                                                                      '$itemCount',
+                                                                      style: new TextStyle(
+                                                                          fontSize:
+                                                                              20.0)),
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                  height: 25,
+                                                                  width: 25,
+                                                                  child:
+                                                                      FloatingActionButton(
+                                                                    onPressed: itemCount <
+                                                                            int.parse(snapshot.data!.docs[index]["stockAmount"])
+                                                                        ? (() {
+                                                                            setState(() {
+                                                                              itemCount += 1;
+                                                                            });
+                                                                          })
+                                                                        : null,
+                                                                    child:
+                                                                        new Icon(
+                                                                      Icons.add,
+                                                                      size: 15,
+                                                                      color: Colors
+                                                                          .black,
+                                                                    ),
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .white,
+                                                                  )),
+                                                            ],
+                                                          )
                                                         ]),
                                                         SizedBox(height: 30),
                                                         ButtonTheme(
