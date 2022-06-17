@@ -20,14 +20,19 @@ import 'package:geocoding/geocoding.dart' as geocoding;
 import 'StoreItem.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+  final _pageController;
+  final _selectedIndex;
+  const Home(this._selectedIndex, this._pageController, {Key? key})
+      : super(key: key);
 
   @override
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   late User user;
+  @override
+  bool get wantKeepAlive => true;
   User? currentUser = FirebaseAuth.instance.currentUser;
   TextEditingController searchController = TextEditingController();
 
@@ -83,7 +88,7 @@ class _HomeState extends State<Home> {
   void findPlace(String placeName) async {
     if (placeName.length > 1) {
       String autocompleteUrl =
-          "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${placeName}&key=$apiKey";
+          "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${placeName}&components=country:my&radius=10000&key=$apiKey";
 
       var res = await Requests.get(autocompleteUrl);
 
@@ -198,8 +203,10 @@ class _HomeState extends State<Home> {
                             GestureDetector(
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        StoreItem(items["uid"])));
+                                    builder: (context) => StoreItem(
+                                        widget._selectedIndex,
+                                        widget._pageController,
+                                        items["uid"])));
                               },
                               child: AbsorbPointer(
                                   child: Center(
@@ -317,6 +324,8 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     CameraPosition _kGooglePlex = CameraPosition(
       target: LatLng(
         latitude!,
@@ -398,6 +407,7 @@ class _HomeState extends State<Home> {
                                     FocusManager.instance.primaryFocus
                                         ?.unfocus()
                                   });
+                          searchController.clear();
                         });
                       },
                       child: ListTile(

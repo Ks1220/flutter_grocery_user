@@ -5,9 +5,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_grocery_user/UserFeedback.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as Path;
 
+import 'ForgotPassword.dart';
 import 'Start.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -18,7 +20,10 @@ class ProfilePage extends StatefulWidget {
   _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<ProfilePage>
+    with AutomaticKeepAliveClientMixin<ProfilePage> {
+  @override
+  bool get wantKeepAlive => true;
   late final Future? myFuture;
 
   @override
@@ -128,6 +133,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final isKeyboard = MediaQuery.of(context).viewInsets.bottom != 0;
 
     return Scaffold(
@@ -562,10 +568,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ));
                               });
                         },
-                        shape: Border(
-                            bottom: BorderSide(
-                                color: Color.fromARGB(255, 199, 199, 199),
-                                width: 1)),
                         leading: (Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -601,37 +603,73 @@ class _ProfilePageState extends State<ProfilePage> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 40,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ForgotPassword()));
+                        },
+                        child: ListTile(
+                          shape: Border(
+                              top: BorderSide(
+                                  color: Color.fromARGB(255, 199, 199, 199),
+                                  width: 1),
+                              bottom: BorderSide(
+                                  color: Color.fromARGB(255, 199, 199, 199),
+                                  width: 1)),
+                          leading: (Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Change Password",
+                                style: const TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.w700),
+                              ),
+                            ],
+                          )),
+                          trailing: Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: <Widget>[
+                              Icon(
+                                Icons.chevron_right,
+                                size: 26,
+                                color: Colors.black,
+                              )
+                            ],
+                          ),
+                        ),
                       ),
-                      ListTile(
-                        shape: Border(
-                            top: BorderSide(
-                                color: Color.fromARGB(255, 199, 199, 199),
-                                width: 1),
-                            bottom: BorderSide(
-                                color: Color.fromARGB(255, 199, 199, 199),
-                                width: 1)),
-                        leading: (Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Change Password",
-                              style: const TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.w700),
-                            ),
-                          ],
-                        )),
-                        trailing: Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: <Widget>[
-                            Icon(
-                              Icons.chevron_right,
-                              size: 26,
-                              color: Colors.black,
-                            )
-                          ],
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => UserFeedback()));
+                        },
+                        child: ListTile(
+                          shape: Border(
+                              bottom: BorderSide(
+                                  color: Color.fromARGB(255, 199, 199, 199),
+                                  width: 1)),
+                          leading: (Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Feedback",
+                                style: const TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.w700),
+                              ),
+                            ],
+                          )),
+                          trailing: Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: <Widget>[
+                              Icon(
+                                Icons.chevron_right,
+                                size: 26,
+                                color: Colors.black,
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ]);

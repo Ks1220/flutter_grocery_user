@@ -10,13 +10,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter_grocery_user/CheckoutSelfPickUp.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import 'AddItem.dart';
+import 'Checkout.dart';
 import 'databaseManager/DatabaseManager.dart';
 
 class Cart extends StatefulWidget {
-  const Cart({Key? key}) : super(key: key);
+  final _pageController;
+  final _selectedIndex;
+  const Cart(this._selectedIndex, this._pageController, {Key? key})
+      : super(key: key);
 
   @override
   _CartState createState() => _CartState();
@@ -35,7 +40,7 @@ class _CartState extends State<Cart> {
     fetchGroceryItemList();
   }
 
-  showDeleteItemsDialog(itemId) async {
+  showDeleteItemsDialog(itemId, index) async {
     return showDialog(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -96,7 +101,12 @@ class _CartState extends State<Cart> {
                               );
                             },
                           )
-                        });
+                        })
+                    .then((value) {
+                  setState(() {
+                    items.removeAt(index);
+                  });
+                });
               },
             ),
           ],
@@ -193,19 +203,13 @@ class _CartState extends State<Cart> {
                                     SlidableAction(
                                       onPressed: (ctx) {
                                         showDeleteItemsDialog(
-                                            snapshot.data!.docs[index]['id']);
+                                            snapshot.data!.docs[index]['id'],
+                                            index);
                                       },
                                       backgroundColor: Color(0xFFFE4A49),
                                       foregroundColor: Colors.white,
                                       icon: Icons.delete,
                                       label: 'Delete',
-                                    ),
-                                    SlidableAction(
-                                      onPressed: (ctx) {},
-                                      backgroundColor: Color(0xFF21B7CA),
-                                      foregroundColor: Colors.white,
-                                      icon: Icons.share,
-                                      label: 'Share',
                                     ),
                                   ],
                                 ),
@@ -215,19 +219,13 @@ class _CartState extends State<Cart> {
                                     SlidableAction(
                                       onPressed: (ctx) {
                                         showDeleteItemsDialog(
-                                            snapshot.data!.docs[index]['id']);
+                                            snapshot.data!.docs[index]['id'],
+                                            index);
                                       },
                                       backgroundColor: Color(0xFFFE4A49),
                                       foregroundColor: Colors.white,
                                       icon: Icons.delete,
                                       label: 'Delete',
-                                    ),
-                                    SlidableAction(
-                                      onPressed: (ctx) {},
-                                      backgroundColor: Color(0xFF21B7CA),
-                                      foregroundColor: Colors.white,
-                                      icon: Icons.share,
-                                      label: 'Share',
                                     ),
                                   ],
                                 ),
@@ -239,6 +237,8 @@ class _CartState extends State<Cart> {
                                           Navigator.of(context).push(
                                               MaterialPageRoute(
                                                   builder: (context) => AddItem(
+                                                      widget._selectedIndex,
+                                                      widget._pageController,
                                                       snapshot.data!.docs[index]
                                                           ["id"],
                                                       snapshot.data!.docs[index]
@@ -255,6 +255,8 @@ class _CartState extends State<Cart> {
                                           Navigator.of(context).push(
                                               MaterialPageRoute(
                                                   builder: (context) => AddItem(
+                                                      widget._selectedIndex,
+                                                      widget._pageController,
                                                       snapshot.data!.docs[index]
                                                           ["id"],
                                                       snapshot.data!.docs[index]
@@ -300,6 +302,8 @@ class _CartState extends State<Cart> {
                                           Navigator.of(context).push(
                                               MaterialPageRoute(
                                                   builder: (context) => AddItem(
+                                                      widget._selectedIndex,
+                                                      widget._pageController,
                                                       snapshot.data!.docs[index]
                                                           ["id"],
                                                       snapshot.data!.docs[index]
@@ -488,32 +492,6 @@ class _CartState extends State<Cart> {
                                             SizedBox(
                                               width: 20,
                                             ),
-                                            // SizedBox.fromSize(
-                                            //   size: Size(30, 30),
-                                            //   child: Material(
-                                            //     color: Color(0xff2C6846),
-                                            //     child: InkWell(
-                                            //       splashColor: Colors.green,
-                                            //       onTap: () {
-                                            //         showDeleteItemsDialog(
-                                            //             snapshot.data!
-                                            //                 .docs[index]['id']);
-                                            //       }, // button pressed
-                                            //       child: Column(
-                                            //         mainAxisAlignment:
-                                            //             MainAxisAlignment
-                                            //                 .center,
-                                            //         children: <Widget>[
-                                            //           Icon(
-                                            //             Icons.clear,
-                                            //             size: 18,
-                                            //             color: Colors.white,
-                                            //           ),
-                                            //         ],
-                                            //       ),
-                                            //     ),
-                                            //   ),
-                                            // )
                                           ],
                                         ),
                                       )),
@@ -556,7 +534,10 @@ class _CartState extends State<Cart> {
                                         new BorderRadius.circular(5.0),
                                   ),
                                   onPressed: () {
-                                    // showLogOutDialog();
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                CheckoutSelfPickUp()));
                                   },
                                   child: Text('Self Pick-Up',
                                       style: TextStyle(
@@ -583,7 +564,9 @@ class _CartState extends State<Cart> {
                                         new BorderRadius.circular(5.0),
                                   ),
                                   onPressed: () {
-                                    // showLogOutDialog();
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) => Checkout()));
                                   },
                                   child: Text('Buy Now',
                                       style: TextStyle(

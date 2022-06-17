@@ -5,6 +5,8 @@ class DatabaseManager {
       FirebaseFirestore.instance.collection('Items');
   final CollectionReference cartList =
       FirebaseFirestore.instance.collection('Carts');
+  final CollectionReference orderList =
+      FirebaseFirestore.instance.collection('UserOrders');
   final CollectionReference favList =
       FirebaseFirestore.instance.collection('Favourite');
 
@@ -26,9 +28,37 @@ class DatabaseManager {
     }
   }
 
+  getCartLength(uid) async {
+    List itemsList = [];
+
+    try {
+      Query query = cartList.doc(uid).collection('Item').orderBy("storeName");
+      await query.get().then((docs) {
+        docs.docs.forEach((doc) {
+          itemsList.add(doc);
+        });
+      });
+
+      return itemsList.length;
+    } catch (e) {
+      print("Error: $e");
+      return null;
+    }
+  }
+
   Stream? getCartList(uid) {
     try {
       Query query = cartList.doc(uid).collection('Item').orderBy("storeName");
+      return query.snapshots();
+    } catch (e) {
+      print("Error: $e");
+      return null;
+    }
+  }
+
+  Stream? getOrderList(uid) {
+    try {
+      Query query = orderList.doc(uid).collection('Item').orderBy("storeName");
       return query.snapshots();
     } catch (e) {
       print("Error: $e");

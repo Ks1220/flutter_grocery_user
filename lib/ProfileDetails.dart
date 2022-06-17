@@ -13,10 +13,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 class StoreDetails extends StatefulWidget {
   final TextEditingController _nameController,
+      _phoneController,
       _emailController,
       _passwordController;
-  StoreDetails(
-      this._nameController, this._emailController, this._passwordController,
+  StoreDetails(this._nameController, this._phoneController,
+      this._emailController, this._passwordController,
       {Key? key})
       : super(key: key);
   _StoreDetailsState createState() => _StoreDetailsState();
@@ -99,7 +100,6 @@ class _StoreDetailsState extends State<StoreDetails> {
               child: Column(
         children: <Widget>[
           SizedBox(height: 10.0),
-
           Container(
             child: RichText(
               textAlign: TextAlign.left,
@@ -113,7 +113,6 @@ class _StoreDetailsState extends State<StoreDetails> {
             ),
             width: mediaQueryData.size.width * 0.85,
           ),
-
           Container(
             child: RichText(
               textAlign: TextAlign.left,
@@ -225,7 +224,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                         child: TextFormField(
                           controller: _stateController,
                           validator: (input) {
-                            if (input!.length < 2) return 'No such state';
+                            if (input!.length < 2) return 'State is required';
                           },
                           decoration: InputDecoration(
                             focusedErrorBorder: OutlineInputBorder(
@@ -259,8 +258,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                         child: TextFormField(
                           controller: _cityController,
                           validator: (input) {
-                            if (input!.length < 2)
-                              return 'Please enter a correct city';
+                            if (input!.length < 2) return 'City is required';
                           },
                           decoration: InputDecoration(
                             focusedErrorBorder: OutlineInputBorder(
@@ -288,8 +286,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                         child: TextFormField(
                           controller: _countryController,
                           validator: (input) {
-                            if (input!.length < 2)
-                              return 'Please enter a correct country';
+                            if (input!.length < 2) return 'Country is required';
                           },
                           decoration: InputDecoration(
                             focusedErrorBorder: OutlineInputBorder(
@@ -317,7 +314,6 @@ class _StoreDetailsState extends State<StoreDetails> {
                 ])),
           ),
           SizedBox(height: 20),
-
           ButtonTheme(
             buttonColor: Color(0xff2C6846),
             minWidth: mediaQueryData.size.width * 0.85,
@@ -348,20 +344,43 @@ class _StoreDetailsState extends State<StoreDetails> {
                       .set({
                     "uid": _firebaseAuth.currentUser!.uid.toString(),
                     "email": user.user!.email,
+                    "phone": widget._phoneController.text,
                     "name": widget._nameController.text,
                     "shippingAddress": _addressOneController.text +
-                        "," +
+                        " " +
                         _addressTwoController.text +
-                        "," +
+                        " " +
                         _postalCodeController.text +
-                        "," +
+                        " " +
                         _cityController.text +
-                        "," +
+                        " " +
                         _stateController.text +
-                        "," +
+                        " " +
                         _countryController.text,
                     "isMerchant": false
                   });
+                  showFlash(
+                      context: context,
+                      duration: const Duration(seconds: 3),
+                      builder: (context, controller) {
+                        return Flash.bar(
+                          controller: controller,
+                          backgroundColor: Colors.green,
+                          position: FlashPosition.top,
+                          child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 70,
+                              child: Center(
+                                child: Text(
+                                  "Registered",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              )),
+                        );
+                      });
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -376,7 +395,6 @@ class _StoreDetailsState extends State<StoreDetails> {
             ),
           ),
           SizedBox(height: 10.0),
-
           Container(
             child: RichText(
               textAlign: TextAlign.center,
@@ -388,14 +406,7 @@ class _StoreDetailsState extends State<StoreDetails> {
             ),
             width: 300,
           ),
-          // SignInButton(
-          //       Buttons.Google,
-          //       onPressed: () {
-          //         // final provider =
-          //         //     Provider.of<GoogleSignInProvider>(context, listen: false);
-          //         // provider.login();
-          //       },
-          //     )
+          SizedBox(height: 10.0),
         ],
       ))),
     );

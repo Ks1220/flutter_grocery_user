@@ -15,7 +15,10 @@ import 'AddItem.dart';
 import 'databaseManager/DatabaseManager.dart';
 
 class Favourite extends StatefulWidget {
-  const Favourite({Key? key}) : super(key: key);
+  final _pageController;
+  final _selectedIndex;
+  const Favourite(this._selectedIndex, this._pageController, {Key? key})
+      : super(key: key);
 
   @override
   _FavouriteState createState() => _FavouriteState();
@@ -36,7 +39,7 @@ class _FavouriteState extends State<Favourite> {
     fetchGroceryItemList();
   }
 
-  showDeleteItemsDialog(itemId) async {
+  showDeleteItemsDialog(itemId, index) async {
     return showDialog(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -98,7 +101,13 @@ class _FavouriteState extends State<Favourite> {
                               );
                             },
                           )
-                        });
+                        })
+                    .then((value) {
+                  setState(() {
+                    items.removeAt(index);
+                  });
+                });
+                ;
               },
             ),
           ],
@@ -190,6 +199,8 @@ class _FavouriteState extends State<Favourite> {
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => AddItem(
+                                        widget._selectedIndex,
+                                        widget._pageController,
                                         snapshot.data!.docs[index]["id"],
                                         snapshot.data!.docs[index]
                                             ["storeId"])));
@@ -202,19 +213,13 @@ class _FavouriteState extends State<Favourite> {
                                     SlidableAction(
                                       onPressed: (ctx) {
                                         showDeleteItemsDialog(
-                                            snapshot.data!.docs[index]['id']);
+                                            snapshot.data!.docs[index]['id'],
+                                            index);
                                       },
                                       backgroundColor: Color(0xFFFE4A49),
                                       foregroundColor: Colors.white,
                                       icon: Icons.delete,
                                       label: 'Delete',
-                                    ),
-                                    SlidableAction(
-                                      onPressed: (ctx) {},
-                                      backgroundColor: Color(0xFF21B7CA),
-                                      foregroundColor: Colors.white,
-                                      icon: Icons.share,
-                                      label: 'Share',
                                     ),
                                   ],
                                 ),
@@ -224,19 +229,13 @@ class _FavouriteState extends State<Favourite> {
                                     SlidableAction(
                                       onPressed: (ctx) {
                                         showDeleteItemsDialog(
-                                            snapshot.data!.docs[index]['id']);
+                                            snapshot.data!.docs[index]['id'],
+                                            index);
                                       },
                                       backgroundColor: Color(0xFFFE4A49),
                                       foregroundColor: Colors.white,
                                       icon: Icons.delete,
                                       label: 'Delete',
-                                    ),
-                                    SlidableAction(
-                                      onPressed: (ctx) {},
-                                      backgroundColor: Color(0xFF21B7CA),
-                                      foregroundColor: Colors.white,
-                                      icon: Icons.share,
-                                      label: 'Share',
                                     ),
                                   ],
                                 ),
@@ -447,7 +446,7 @@ class _FavouriteState extends State<Favourite> {
                                                           ],
                                                         ),
                                                         SizedBox(height: 30),
-                                                        Wrap(children: <Widget>[
+                                                        Row(children: <Widget>[
                                                           Container(
                                                             width: MediaQuery.of(
                                                                         context)
@@ -463,73 +462,69 @@ class _FavouriteState extends State<Favourite> {
                                                                           .w600),
                                                             ),
                                                           ),
-                                                          SizedBox(
-                                                            height: 25,
-                                                            width: 25,
-                                                            child:
-                                                                FloatingActionButton(
-                                                              onPressed:
-                                                                  itemCount != 1
-                                                                      ? (() {
-                                                                          setState(
-                                                                              () {
-                                                                            itemCount -=
-                                                                                1;
-                                                                          });
-                                                                        })
-                                                                      : null,
-                                                              child: Icon(
-                                                                  Icons.remove,
-                                                                  size: 15,
-                                                                  color: Colors
-                                                                      .black),
-                                                              backgroundColor:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                          SizedBox(
-                                                            width: 30,
-                                                            child: Center(
-                                                              child: Text(
-                                                                  '$itemCount',
-                                                                  style: new TextStyle(
-                                                                      fontSize:
-                                                                          20.0)),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                          SizedBox(
-                                                              height: 25,
-                                                              width: 25,
-                                                              child:
-                                                                  FloatingActionButton(
-                                                                onPressed: itemCount <
-                                                                        int.parse(snapshot
-                                                                            .data!
-                                                                            .docs[index]["stockAmount"])
-                                                                    ? (() {
-                                                                        setState(
-                                                                            () {
-                                                                          itemCount +=
-                                                                              1;
-                                                                        });
-                                                                      })
-                                                                    : null,
-                                                                child: new Icon(
-                                                                  Icons.add,
-                                                                  size: 15,
-                                                                  color: Colors
-                                                                      .black,
+                                                          Row(
+                                                            children: [
+                                                              SizedBox(
+                                                                height: 25,
+                                                                width: 25,
+                                                                child:
+                                                                    FloatingActionButton(
+                                                                  onPressed:
+                                                                      itemCount !=
+                                                                              1
+                                                                          ? (() {
+                                                                              setState(() {
+                                                                                itemCount -= 1;
+                                                                              });
+                                                                            })
+                                                                          : null,
+                                                                  child: Icon(
+                                                                      Icons
+                                                                          .remove,
+                                                                      size: 15,
+                                                                      color: Colors
+                                                                          .black),
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .white,
                                                                 ),
-                                                                backgroundColor:
-                                                                    Colors
-                                                                        .white,
-                                                              )),
+                                                              ),
+                                                              SizedBox(
+                                                                width: 40,
+                                                                child: Center(
+                                                                  child: Text(
+                                                                      '$itemCount',
+                                                                      style: new TextStyle(
+                                                                          fontSize:
+                                                                              20.0)),
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                  height: 25,
+                                                                  width: 25,
+                                                                  child:
+                                                                      FloatingActionButton(
+                                                                    onPressed: itemCount <
+                                                                            int.parse(snapshot.data!.docs[index]["stockAmount"])
+                                                                        ? (() {
+                                                                            setState(() {
+                                                                              itemCount += 1;
+                                                                            });
+                                                                          })
+                                                                        : null,
+                                                                    child:
+                                                                        new Icon(
+                                                                      Icons.add,
+                                                                      size: 15,
+                                                                      color: Colors
+                                                                          .black,
+                                                                    ),
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .white,
+                                                                  )),
+                                                            ],
+                                                          )
                                                         ]),
                                                         SizedBox(height: 30),
                                                         ButtonTheme(
@@ -567,6 +562,8 @@ class _FavouriteState extends State<Favourite> {
                                                                           .docs[
                                                                       index]["id"])
                                                                   .get();
+                                                              print(
+                                                                  "ITEM COUNT: $itemCount");
 
                                                               if (snapShot ==
                                                                       null ||
@@ -585,52 +582,37 @@ class _FavouriteState extends State<Favourite> {
                                                                             .docs[index]
                                                                         ["id"])
                                                                     .set({
-                                                                  "itemName": snapshot
+                                                                      "itemName": snapshot
                                                                           .data!
-                                                                          .docs[index]
-                                                                      [
-                                                                      "itemName"],
-                                                                  "itemImage": snapshot
+                                                                          .docs[index]["itemName"],
+                                                                      "itemImage": snapshot
                                                                           .data!
-                                                                          .docs[index]
-                                                                      [
-                                                                      "itemImage"],
-                                                                  "itemDescription": snapshot
+                                                                          .docs[index]["itemImage"],
+                                                                      "itemDescription": snapshot
                                                                           .data!
-                                                                          .docs[index]
-                                                                      [
-                                                                      "itemDescription"],
-                                                                  "price": snapshot
+                                                                          .docs[index]["itemDescription"],
+                                                                      "price": snapshot
                                                                           .data!
-                                                                          .docs[index]
-                                                                      ["price"],
-                                                                  "measurementMatrix": snapshot
+                                                                          .docs[index]["price"],
+                                                                      "measurementMatrix": snapshot
                                                                           .data!
-                                                                          .docs[index]
-                                                                      [
-                                                                      "measurementMatrix"],
-                                                                  "itemCount":
-                                                                      1,
-                                                                  "storeId": snapshot
+                                                                          .docs[index]["measurementMatrix"],
+                                                                      "itemCount":
+                                                                          itemCount,
+                                                                      "storeId": snapshot
                                                                           .data!
-                                                                          .docs[index]
-                                                                      [
-                                                                      "storeId"],
-                                                                  "storeName": snapshot
+                                                                          .docs[index]["storeId"],
+                                                                      "storeName": snapshot
                                                                           .data!
-                                                                          .docs[index]
-                                                                      [
-                                                                      "storeName"],
-                                                                  "id": snapshot
+                                                                          .docs[index]["storeName"],
+                                                                      "id": snapshot
                                                                           .data!
-                                                                          .docs[
-                                                                      index]["id"],
-                                                                  "stockAmount": snapshot
+                                                                          .docs[index]["id"],
+                                                                      "stockAmount": snapshot
                                                                           .data!
-                                                                          .docs[index]
-                                                                      [
-                                                                      "stockAmount"],
-                                                                }).then(
+                                                                          .docs[index]["stockAmount"],
+                                                                    })
+                                                                    .then(
                                                                         (value) =>
                                                                             {
                                                                               showFlash(
@@ -661,7 +643,13 @@ class _FavouriteState extends State<Favourite> {
                                                                                 },
                                                                               ),
                                                                               Navigator.pop(context)
-                                                                            });
+                                                                            })
+                                                                    .then((value) =>
+                                                                        setState(
+                                                                            () {
+                                                                          itemCount =
+                                                                              1;
+                                                                        }));
                                                               } else {
                                                                 await FirebaseFirestore
                                                                     .instance
