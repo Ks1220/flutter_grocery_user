@@ -20,7 +20,10 @@ import 'package:geocoding/geocoding.dart' as geocoding;
 import 'StoreItem.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+  final _pageController;
+  final _selectedIndex;
+  const Home(this._selectedIndex, this._pageController, {Key? key})
+      : super(key: key);
 
   @override
   _HomeState createState() => _HomeState();
@@ -200,8 +203,10 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
                             GestureDetector(
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        StoreItem(items["uid"])));
+                                    builder: (context) => StoreItem(
+                                        widget._selectedIndex,
+                                        widget._pageController,
+                                        items["uid"])));
                               },
                               child: AbsorbPointer(
                                   child: Center(
