@@ -15,7 +15,10 @@ import 'AddItem.dart';
 import 'databaseManager/DatabaseManager.dart';
 
 class Favourite extends StatefulWidget {
-  const Favourite({Key? key}) : super(key: key);
+  final _pageController;
+  final _selectedIndex;
+  const Favourite(this._selectedIndex, this._pageController, {Key? key})
+      : super(key: key);
 
   @override
   _FavouriteState createState() => _FavouriteState();
@@ -36,7 +39,7 @@ class _FavouriteState extends State<Favourite> {
     fetchGroceryItemList();
   }
 
-  showDeleteItemsDialog(itemId) async {
+  showDeleteItemsDialog(itemId, index) async {
     return showDialog(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -98,7 +101,13 @@ class _FavouriteState extends State<Favourite> {
                               );
                             },
                           )
-                        });
+                        })
+                    .then((value) {
+                  setState(() {
+                    items.removeAt(index);
+                  });
+                });
+                ;
               },
             ),
           ],
@@ -190,6 +199,8 @@ class _FavouriteState extends State<Favourite> {
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => AddItem(
+                                        widget._selectedIndex,
+                                        widget._pageController,
                                         snapshot.data!.docs[index]["id"],
                                         snapshot.data!.docs[index]
                                             ["storeId"])));
@@ -202,7 +213,8 @@ class _FavouriteState extends State<Favourite> {
                                     SlidableAction(
                                       onPressed: (ctx) {
                                         showDeleteItemsDialog(
-                                            snapshot.data!.docs[index]['id']);
+                                            snapshot.data!.docs[index]['id'],
+                                            index);
                                       },
                                       backgroundColor: Color(0xFFFE4A49),
                                       foregroundColor: Colors.white,
@@ -217,7 +229,8 @@ class _FavouriteState extends State<Favourite> {
                                     SlidableAction(
                                       onPressed: (ctx) {
                                         showDeleteItemsDialog(
-                                            snapshot.data!.docs[index]['id']);
+                                            snapshot.data!.docs[index]['id'],
+                                            index);
                                       },
                                       backgroundColor: Color(0xFFFE4A49),
                                       foregroundColor: Colors.white,

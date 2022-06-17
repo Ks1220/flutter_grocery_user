@@ -18,7 +18,10 @@ import 'Checkout.dart';
 import 'databaseManager/DatabaseManager.dart';
 
 class Cart extends StatefulWidget {
-  const Cart({Key? key}) : super(key: key);
+  final _pageController;
+  final _selectedIndex;
+  const Cart(this._selectedIndex, this._pageController, {Key? key})
+      : super(key: key);
 
   @override
   _CartState createState() => _CartState();
@@ -37,7 +40,7 @@ class _CartState extends State<Cart> {
     fetchGroceryItemList();
   }
 
-  showDeleteItemsDialog(itemId) async {
+  showDeleteItemsDialog(itemId, index) async {
     return showDialog(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -99,8 +102,11 @@ class _CartState extends State<Cart> {
                             },
                           )
                         })
-                    .then((value) => Navigator.of(context)
-                        .popUntil((route) => route.isFirst));
+                    .then((value) {
+                  setState(() {
+                    items.removeAt(index);
+                  });
+                });
               },
             ),
           ],
@@ -197,7 +203,8 @@ class _CartState extends State<Cart> {
                                     SlidableAction(
                                       onPressed: (ctx) {
                                         showDeleteItemsDialog(
-                                            snapshot.data!.docs[index]['id']);
+                                            snapshot.data!.docs[index]['id'],
+                                            index);
                                       },
                                       backgroundColor: Color(0xFFFE4A49),
                                       foregroundColor: Colors.white,
@@ -212,7 +219,8 @@ class _CartState extends State<Cart> {
                                     SlidableAction(
                                       onPressed: (ctx) {
                                         showDeleteItemsDialog(
-                                            snapshot.data!.docs[index]['id']);
+                                            snapshot.data!.docs[index]['id'],
+                                            index);
                                       },
                                       backgroundColor: Color(0xFFFE4A49),
                                       foregroundColor: Colors.white,
@@ -229,6 +237,8 @@ class _CartState extends State<Cart> {
                                           Navigator.of(context).push(
                                               MaterialPageRoute(
                                                   builder: (context) => AddItem(
+                                                      widget._selectedIndex,
+                                                      widget._pageController,
                                                       snapshot.data!.docs[index]
                                                           ["id"],
                                                       snapshot.data!.docs[index]
@@ -245,6 +255,8 @@ class _CartState extends State<Cart> {
                                           Navigator.of(context).push(
                                               MaterialPageRoute(
                                                   builder: (context) => AddItem(
+                                                      widget._selectedIndex,
+                                                      widget._pageController,
                                                       snapshot.data!.docs[index]
                                                           ["id"],
                                                       snapshot.data!.docs[index]
@@ -290,6 +302,8 @@ class _CartState extends State<Cart> {
                                           Navigator.of(context).push(
                                               MaterialPageRoute(
                                                   builder: (context) => AddItem(
+                                                      widget._selectedIndex,
+                                                      widget._pageController,
                                                       snapshot.data!.docs[index]
                                                           ["id"],
                                                       snapshot.data!.docs[index]
