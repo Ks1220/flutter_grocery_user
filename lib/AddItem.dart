@@ -16,8 +16,13 @@ import 'Cart.dart';
 class AddItem extends StatefulWidget {
   final String _itemId;
   final String _storeId;
+  final _pageController;
+  final _selectedIndex;
 
-  const AddItem(this._itemId, this._storeId, {Key? key}) : super(key: key);
+  const AddItem(
+      this._selectedIndex, this._pageController, this._itemId, this._storeId,
+      {Key? key})
+      : super(key: key);
 
   @override
   _AddItemState createState() => _AddItemState();
@@ -732,10 +737,10 @@ class _AddItemState extends State<AddItem> {
                           borderRadius: new BorderRadius.circular(5.0),
                         ),
                         onPressed: () {
-                          // Navigator.of(context)
-                          //     .popUntil(ModalRoute.withName("/Cart"));
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => Cart()));
+                          Navigator.of(context)
+                              .popUntil((route) => route.isFirst);
+                          widget._pageController.jumpToPage(1);
+                          widget._selectedIndex.value = 1;
                         },
                         child: Wrap(
                           spacing: 100,
