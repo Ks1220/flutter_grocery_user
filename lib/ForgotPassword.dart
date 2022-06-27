@@ -143,14 +143,14 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     shape: RoundedRectangleBorder(
                       borderRadius: new BorderRadius.circular(5.0),
                     ),
-                    padding: EdgeInsets.fromLTRB(50, 10, 50, 10),
+                    padding: EdgeInsets.fromLTRB(70, 10, 70, 10),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         resetPassword()
                             .then((value) => {_emailController.clear()});
                       }
                     },
-                    child: Text('Send Password Reset Link',
+                    child: Text('Next',
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 20.0,
